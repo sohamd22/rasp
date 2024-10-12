@@ -24,7 +24,7 @@ const googleAuthCallback = (req, res, next) => {
           console.error('Login error:', err);
           return res.redirect(`${process.env.CLIENT_URL}/signin?error=login_failed`);
         }
-        res.redirect(`${process.env.CLIENT_URL}/`);
+        res.redirect(`${process.env.CLIENT_URL}/?auth=success`);
       });
     } catch (error) {
       console.error('Error updating user in session:', error);

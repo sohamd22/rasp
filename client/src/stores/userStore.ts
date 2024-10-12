@@ -38,6 +38,7 @@ const useUserStore = create<UserState>((set) => ({
     } catch (error) {
       console.error('Failed to fetch user:', error);
       set({ user: null });
+      throw error; // Rethrow the error to be caught in the component
     }
   },
   logout: async () => {

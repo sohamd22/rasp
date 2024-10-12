@@ -11,7 +11,11 @@ const Signin: React.FC = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      await fetchUser();
+      const urlParams = new URLSearchParams(window.location.search);
+      const authSuccess = urlParams.get('auth');
+      if (authSuccess === 'success') {
+        await fetchUser();
+      }
       if (user) {
         navigate('/');
       }
