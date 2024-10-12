@@ -33,7 +33,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/auth', authRoutes);
+app.use('/auth', (req, res, next) => {
+  console.log('Auth route hit:', req.method, req.url);
+  console.log('Session:', req.session);
+  console.log('User:', req.user);
+  next();
+}, authRoutes);
 
 // Connect to MongoDB (make sure you have the connection string in your .env file)
 mongoose.connect(process.env.MONGODB_URI)

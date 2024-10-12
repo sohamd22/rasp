@@ -12,16 +12,24 @@ const googleAuth = (req, res, next) => {
 };
 
 const googleAuthCallback = (req, res, next) => {
+  console.log('Google Auth Callback initiated');
   passport.authenticate('google', { failureRedirect: `${process.env.CLIENT_URL}/signin` })(req, res, async (err) => {
     if (err) {
       console.error('Authentication callback error:', err);
       return res.redirect(`${process.env.CLIENT_URL}/signin?error=auth_failed`);
     }
+    console.log('Passport authentication successful');
     try {
+      console.log('User from request:', req.user);
       const updatedUser = await User.findById(req.user._id).select('-embedding');
+      console.log('User found:', updatedUser);
       req.login(updatedUser, (err) => {
-        if (err) return next(err);
-        res.redirect(`${process.env.CLIENT_URL}/`);
+        if (err) {
+          console.error('Login error:', err);
+          return res.redirect(`${process.env.CLIENT_URL}/signin?error=login_failed`);
+        }
+        console.log('User logged in successfully');
+        res.redirect(`${process.env.CLIENT_URL}/signin?auth=success`);
       });
     } catch (error) {
       console.error('Error updating user in session:', error);
