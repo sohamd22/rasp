@@ -3,42 +3,36 @@ import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import session from 'express-session';
-import passport from './config/passportSetup.js';
-import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
 const app = express();
+const workos = new WorkOS(process.env.WORKOS_API_KEY, {
+  clientId: process.env.WORKOS_CLIENT_ID,
+});
+
+app.get('/login', (req, res) => {
+  const authorizationUrl = workos.userManagement.getAuthorizationUrl({
+    // Specify that we'd like AuthKit to handle the authentication flow
+    provider: 'authkit',
+
+    // The callback endpoint that WorkOS will redirect to after a user authenticates
+    redirectUri: 'http://localhost:3000/callback',
+    clientId: process.env.WORKOS_CLIENT_ID,
+  });
+
+  // Redirect the user to the AuthKit sign-in page
+  res.redirect(authorizationUrl);
+});
 
 app.use(cors({
   origin: process.env.CLIENT_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
 app.use(cookieParser());
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your_session_secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use('/auth', (req, res, next) => {
-  console.log('Auth route hit:', req.method, req.url);
-  console.log('Session:', req.session);
-  console.log('User:', req.user);
-  next();
-}, authRoutes);
 
 // Connect to MongoDB (make sure you have the connection string in your .env file)
 mongoose.connect(process.env.MONGODB_URI)
