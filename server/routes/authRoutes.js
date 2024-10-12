@@ -5,7 +5,7 @@ import { isAuthenticated } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 router.get('/google', googleAuth);
-router.get('/google/callback', googleAuthCallback);
+router.get('/callback/google', googleAuthCallback);
 router.get('/logout', isAuthenticated, logout);
 router.get('/user', isAuthenticated, getUser);
 
