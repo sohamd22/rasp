@@ -20,7 +20,10 @@ const googleAuthCallback = (req, res, next) => {
     try {
       const updatedUser = await User.findById(req.user._id).select('-embedding');
       req.login(updatedUser, (err) => {
-        if (err) return next(err);
+        if (err) {
+          console.error('Login error:', err);
+          return res.redirect(`${process.env.CLIENT_URL}/signin?error=login_failed`);
+        }
         res.redirect(`${process.env.CLIENT_URL}/`);
       });
     } catch (error) {

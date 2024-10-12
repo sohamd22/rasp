@@ -8,8 +8,16 @@
     ],
     "routes": [
         {
+            "src": "/auth/google",
+            "dest": "server.js"
+        },
+        {
+            "src": "/auth/google/callback",
+            "dest": "server.js"
+        },
+        {
             "src": "/(.*)",
-            "dest": "/server.js"
+            "dest": "server.js"
         }
     ]
 }
