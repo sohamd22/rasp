@@ -1,71 +1,79 @@
-import passport from '../config/passportSetup.js';
-import { User } from '../models/userModel.js';
+import { WorkOS } from '@workos-inc/node';
+import dotenv from "dotenv";
+dotenv.config();
 
-const googleAuth = (req, res, next) => {
-  passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next, (err) => {
-    if (err) {
-        console.error('Google authentication error:', err);
-        return res.redirect(`${process.env.CLIENT_URL}/signin?error=auth_failed`);
-      }
-      next();
+const workos = new WorkOS(process.env.WORKOS_API_KEY, {
+  clientId: process.env.WORKOS_CLIENT_ID,
+});
+
+const login = (req, res) => {
+  const authorizationUrl = workos.userManagement.getAuthorizationUrl({
+    provider: 'authkit',
+    redirectUri: `${process.env.SERVER_URL}/auth/callback`,
+    clientId: process.env.WORKOS_CLIENT_ID,
   });
+
+  res.redirect(authorizationUrl);
 };
 
-const googleAuthCallback = (req, res, next) => {
-  console.log('Google Auth Callback initiated');
-  passport.authenticate('google', { failureRedirect: `${process.env.CLIENT_URL}/signin` })(req, res, async (err) => {
-    if (err) {
-      console.error('Authentication callback error:', err);
-      return res.redirect(`${process.env.CLIENT_URL}/signin?error=auth_failed`);
-    }
-    console.log('Passport authentication successful');
-    try {
-      console.log('User from request:', req.user);
-      const updatedUser = await User.findById(req.user._id).select('-embedding');
-      console.log('User found:', updatedUser);
-      req.login(updatedUser, (err) => {
-        if (err) {
-          console.error('Login error:', err);
-          return res.redirect(`${process.env.CLIENT_URL}/signin?error=login_failed`);
-        }
-        console.log('User logged in successfully');
-        res.redirect(`${process.env.CLIENT_URL}/`);
+const callback = async (req, res) => {
+  const code = req.query.code;
+
+  if (!code) {
+    return res.status(400).send('No code provided');
+  }
+
+  try {
+    const authenticateResponse =
+      await workos.userManagement.authenticateWithCode({
+        clientId: process.env.WORKOS_CLIENT_ID,
+        code,
+        session: {
+          sealSession: true,
+          cookiePassword: process.env.WORKOS_COOKIE_PASSWORD,
+        },
       });
-    } catch (error) {
-      console.error('Error updating user in session:', error);
-      res.redirect(`${process.env.CLIENT_URL}/signin?error=auth_failed`);
-    }
-  });
-};
 
-const logout = (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      console.error('Logout error:', err);
-      return res.status(500).json({ message: 'Logout failed', error: err.message });
-    }
-    req.session.destroy((err) => {
-      if (err) {
-        console.error('Session destruction error:', err);
-        return res.status(500).json({ message: 'Logout failed', error: err.message });
-      }
-      res.clearCookie('connect.sid');
-      res.status(200).json({ message: 'Logout successful' });
+    const { user, sealedSession } = authenticateResponse;
+
+    console.log(user);
+
+    res.cookie('wos-session', sealedSession, {
+      path: '/',
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
     });
-  });
+
+    return res.redirect(`${process.env.CLIENT_URL}/`);
+  } catch (error) {
+    return res.redirect('/auth/login');
+  }
 };
 
 const getUser = async (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ message: 'Not authenticated' });
-  }
-  try {
-    const user = await User.findById(req.user._id).select('-embedding');
-    res.json(user);
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    res.status(500).json({ message: 'Error fetching user data' });
-  }
+  const session = workos.userManagement.loadSealedSession({
+    sessionData: req.cookies['wos-session'],
+    cookiePassword: process.env.WORKOS_COOKIE_PASSWORD,
+  });
+
+  const { user } = await session.authenticate();
+
+  console.log(`User ${user.firstName} is logged in`);
+
+  res.json({ success: true, user: { name: user.firstName, email: user.email } });
 };
 
-export { googleAuth, googleAuthCallback, logout, getUser };
+const logout = async (req, res) => {
+  const session = workos.userManagement.loadSealedSession({
+    sessionData: req.cookies['wos-session'],
+    cookiePassword: process.env.WORKOS_COOKIE_PASSWORD,
+  });
+
+  const url = await session.getLogoutUrl();
+
+  res.clearCookie('wos-session');
+  res.redirect(url);
+};
+
+export { login, callback, getUser, logout };

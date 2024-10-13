@@ -3,42 +3,21 @@ import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import session from 'express-session';
-import passport from './config/passportSetup.js';
 import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
 const app = express();
-
 app.use(cors({
   origin: process.env.CLIENT_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
-
 app.use(cookieParser());
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your_session_secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
-}));
-app.use(passport.initialize());
-app.use(passport.session());
 
-app.use('/auth', (req, res, next) => {
-  console.log('Auth route hit:', req.method, req.url);
-  console.log('Session:', req.session);
-  console.log('User:', req.user);
-  next();
-}, authRoutes);
+// Use auth routes
+app.use('/auth', authRoutes);
 
 // Connect to MongoDB (make sure you have the connection string in your .env file)
 mongoose.connect(process.env.MONGODB_URI)
