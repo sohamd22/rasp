@@ -21,10 +21,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         if (response.data.success) {
           setIsAuthenticated(true);
           setUser(response.data.user);
-          console.log(response.data.user);
+        } else {
+          setIsAuthenticated(false);
         }
       } catch (error) {
         console.error('Authentication check failed:', error);
+        setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
       }

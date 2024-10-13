@@ -52,16 +52,21 @@ const callback = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const session = workos.userManagement.loadSealedSession({
-    sessionData: req.cookies['wos-session'],
-    cookiePassword: process.env.WORKOS_COOKIE_PASSWORD,
-  });
+  try {
+    const session = workos.userManagement.loadSealedSession({
+      sessionData: req.cookies['wos-session'],
+      cookiePassword: process.env.WORKOS_COOKIE_PASSWORD,
+    });
 
-  const { user } = await session.authenticate();
+    const { user } = await session.authenticate();
 
-  console.log(`User ${user.firstName} is logged in`);
+    console.log(`User ${user.firstName} is logged in`);
 
-  res.json({ success: true, user: { name: user.firstName, email: user.email } });
+    res.json({ success: true, user: { name: user.firstName, email: user.email } });
+  } catch (error) {
+    console.error('Error authenticating user:', error);
+    res.json({ success: false, error: 'Authentication failed' });
+  }
 };
 
 const logout = async (req, res) => {
