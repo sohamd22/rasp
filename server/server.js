@@ -34,13 +34,13 @@ app.use('/auth', authRoutes);
 const httpServer = http.createServer(app);
 const __dirname = path.resolve();
   
-const serveStatic = express.static(path.join(__dirname, '../client/dist'));
+const serveStatic = express.static(path.join(__dirname, '/client/dist'));
 app.use(serveStatic);
 
 app.get('/', withAuth, getUser);
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '/client/dist', 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;
