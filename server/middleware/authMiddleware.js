@@ -36,6 +36,8 @@ const withAuth = async (req, res, next) => {
       sameSite: 'lax',
     });
 
+    res.set('Access-Control-Allow-Origin', process.env.CLIENT_URL);
+
     return res.redirect(req.originalUrl);
   } catch (e) {
     res.clearCookie('wos-session');
