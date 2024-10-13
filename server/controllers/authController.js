@@ -45,9 +45,9 @@ const callback = async (req, res) => {
       sameSite: 'lax',
     });
 
-    return res.redirect(`${process.env.CLIENT_URL}/`);
+    return res.redirect(`/`);
   } catch (error) {
-    return res.redirect('/auth/login');
+    return res.redirect('/signin');
   }
 };
 
@@ -66,6 +66,7 @@ const getUser = async (req, res) => {
   } catch (error) {
     console.error('Error authenticating user:', error);
     res.json({ success: false, error: 'Authentication failed' });
+    res.redirect('/signin');
   }
 };
 
@@ -81,4 +82,8 @@ const logout = async (req, res) => {
   res.redirect(url);
 };
 
-export { login, callback, getUser, logout };
+const checkAuth = (req, res) => {
+  res.json({ authenticated: true });
+};
+
+export { login, callback, getUser, logout, checkAuth };
