@@ -14,6 +14,10 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+app.get("/", (res) => {
+  return res.send("Hello World");
+})
+
 // Use auth routes
 app.use('/auth', authRoutes);
 
