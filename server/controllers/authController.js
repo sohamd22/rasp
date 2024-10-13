@@ -1,4 +1,5 @@
 import { WorkOS } from '@workos-inc/node';
+import { User } from '../models/userModel.js';
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -36,7 +37,10 @@ const callback = async (req, res) => {
 
     const { user, sealedSession } = authenticateResponse;
 
-    console.log(user);
+    let dbUser = await User.findOne({ email: user.email });
+    if (!dbUser) {
+      dbUser = await User.create({ email: user.email, name: user.firstName + " " + user.lastName, photo: user.profilePictureUrl });
+    }
 
     res.cookie('wos-session', sealedSession, {
       path: '/',
@@ -59,10 +63,11 @@ const getUser = async (req, res) => {
     });
 
     const { user } = await session.authenticate();
+    const dbUser = await User.findOne({ email: user.email }).select('-embedding');
 
     console.log(`User ${user.firstName} is logged in`);
 
-    res.json({ success: true, user: { name: user.firstName, email: user.email } });
+    res.json({ success: true, user: dbUser });
   } catch (error) {
     console.error('Error authenticating user:', error);
     res.json({ success: false, error: 'Authentication failed' });

@@ -17,11 +17,6 @@ statusSchema.index({ expirationDate: 1 }, { expireAfterSeconds: 0 });
 const Status = mongoose.model("Status", statusSchema);
 
 const userSchema = new mongoose.Schema({
-    googleId: {
-        type: String,
-        required: true,
-        unique: true
-    },
     name: {
         type: String,
         required: true
