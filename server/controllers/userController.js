@@ -75,6 +75,8 @@ const saveUser = async (req, res, next) => {
     user.embedding = embedding;
     await user.save();
 
+    console.log("User data has been saved");
+
     res
         .status(201)
         .json({ message: "User data has been saved" });
