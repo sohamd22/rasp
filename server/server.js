@@ -3,9 +3,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import path from "path";
-import authRoutes from './routes/authRoutes.js';
 import { withAuth } from './middleware/authMiddleware.js';
-import { getUser } from './controllers/authController.js';
+import apiRouter from './api.js';
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -25,8 +24,8 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// Use auth routes
-app.use('/auth', authRoutes);
+// Use api routes
+app.use('/api', apiRouter);
 
 // Serve static files, but not for the root path
 app.use((req, res, next) => {

@@ -10,7 +10,7 @@ const workos = new WorkOS(process.env.WORKOS_API_KEY, {
 const login = (req, res) => {
   const authorizationUrl = workos.userManagement.getAuthorizationUrl({
     provider: 'authkit',
-    redirectUri: `${process.env.SERVER_URL}/auth/callback`,
+    redirectUri: `${process.env.SERVER_URL}/api/auth/callback`,
     clientId: process.env.WORKOS_CLIENT_ID,
   });
 

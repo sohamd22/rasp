@@ -17,14 +17,14 @@ export default defineConfig(({ mode }) => {
         port: parseInt(env.VITE_PORT),
         protocol: 'ws',
       },
-      // proxy: {
-      //   '/auth': {
-      //     target: env.VITE_SERVER_URL,
-      //     changeOrigin: true,
-      //     secure: true,
-      //     ws: true
-      //   },
-      // }
+      proxy: {
+        '/api': {
+          target: env.VITE_SERVER_URL,
+          changeOrigin: true,
+          secure: true,
+          ws: true
+        },
+      }
     },
     plugins: [react()],
   }

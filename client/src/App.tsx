@@ -12,11 +12,11 @@ const App: React.FC = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get('/auth/check', { withCredentials: true });
+        const response = await axios.get('/api/auth/check', { withCredentials: true });
         setIsAuthenticated(response.data.authenticated);
 
         if (response.data.authenticated) {
-          const userResponse = await axios.get('/auth/user', { withCredentials: true });
+          const userResponse = await axios.get('/api/auth/user', { withCredentials: true });
           setUser(userResponse.data.user);
         }
       } catch (error) {

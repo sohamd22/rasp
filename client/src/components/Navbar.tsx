@@ -34,7 +34,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => {
                 </li>
 
                 <li className="justify-self-end">
-                    <a href="/auth/logout" className={`flex items-center justify-center w-full h-16`}>
+                    <a href="/api/auth/logout" className={`flex items-center justify-center w-full h-16`}>
                         <IoMdLogOut size="24" className="text-red-500" />
                     </a>
                 </li>

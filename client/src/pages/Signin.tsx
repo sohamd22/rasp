@@ -21,7 +21,7 @@ const Signin: React.FC = () => {
 
         {/* Google Login Button */}
         <a
-            href={`/auth/login`}
+            href="/api/auth/login"
             className="text-neutral-950 flex gap-2 justify-center items-center p-4 rounded-md border shadow-lg font-medium text-lg transition-all duration-200 hover:-translate-y-0.5 bg-white">
             <FaGoogle size="1.125rem"/>Google
         </a>
