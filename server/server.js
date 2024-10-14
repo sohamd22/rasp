@@ -3,6 +3,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import path from "path";
+import { fileURLToPath } from 'url';
 import { createServer } from "http";
 import { Server } from "socket.io";
 
@@ -32,23 +33,25 @@ app.use(cookieParser());
 // Use api routes
 app.use('/api', apiRouter);
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Serve static files, but not for the root path
 app.use((req, res, next) => {
   if (req.path !== '/') {
-    return express.static(path.join(__dirname, '/client/dist'))(req, res, next);
+    return express.static(path.join(__dirname, '../client/dist'))(req, res, next);
   }
   next();
 });
 
-const __dirname = path.resolve();
 // Root route handler
 app.get('/', withAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, '/client/dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
 
 // Catch-all route for client-side routing
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '/client/dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
 
 // Setup Socket.io
