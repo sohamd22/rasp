@@ -10,7 +10,7 @@ import bodyParser from 'body-parser';
 
 import { withAuth } from './middleware/authMiddleware.js';
 import apiRouter from './api.js';
-import { setConnectedClient, removeConnectedClient, emitToConnectedClient } from './utils/connectedClients.js';
+import { setConnectedClient, removeConnectedClient } from './utils/connectedClients.js';
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -39,6 +39,14 @@ app.use('/api', apiRouter);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Serve static files, but not for the root path
+app.use((req, res, next) => {
+  if (req.path !== '/') {
+    return express.static(path.join(__dirname, '../client/dist'))(req, res, next);
+  }
+  next();
+});
 
 // Root route handler
 app.get('/', withAuth, (req, res) => {
