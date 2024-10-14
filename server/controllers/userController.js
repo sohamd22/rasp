@@ -53,6 +53,7 @@ const saveUser = async (req, res, next) => {
     console.log(req.body.user);
     const userData = req.body.user;
     const user = await User.findById(userData._id);
+    console.log("User found");
     user.name = userData.name;
     user.photo = userData.photo;
     user.about = { ...userData.about };
