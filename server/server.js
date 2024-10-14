@@ -38,6 +38,7 @@ const __dirname = path.dirname(__filename);
 
 // Serve static files, but not for the root path
 app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' https://vercel.live;");
   if (req.path !== '/') {
     return express.static(path.join(__dirname, '../client/dist'))(req, res, next);
   }
@@ -50,7 +51,7 @@ app.get('/', withAuth, (req, res) => {
 });
 
 // Catch-all route for client-side routing
-app.get('/signin', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
 
