@@ -50,6 +50,7 @@ const saveUser = async (req, res, next) => {
   }
 
   try {
+    console.log(req.body.user);
     const userData = req.body.user;
     const user = await User.findById(userData._id);
     user.name = userData.name;

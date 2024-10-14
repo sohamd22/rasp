@@ -6,6 +6,7 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import { createServer } from "http";
 import { Server } from "socket.io";
+import bodyParser from 'body-parser';
 
 import { withAuth } from './middleware/authMiddleware.js';
 import apiRouter from './api.js';
@@ -24,9 +25,12 @@ const app = express();
 const server = createServer(app);
 
 app.use(cors({
+  origin: process.env.SERVER_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
 }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -35,15 +39,6 @@ app.use('/api', apiRouter);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Serve static files, but not for the root path
-app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' https://vercel.live;");
-  if (req.path !== '/') {
-    return express.static(path.join(__dirname, '../client/dist'))(req, res, next);
-  }
-  next();
-});
 
 // Root route handler
 app.get('/', withAuth, (req, res) => {
@@ -71,7 +66,7 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
