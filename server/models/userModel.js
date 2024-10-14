@@ -45,6 +45,29 @@ const userSchema = new mongoose.Schema({
     embedding: []
 });
 
+userSchema.statics.vectorSearch = function(queryVector, limit = 10) {
+    return this.aggregate([
+      {
+        $vectorSearch: {
+          index: "vector_index", // replace with your actual index name
+          queryVector: queryVector,
+          path: "embedding",
+          limit: limit,
+          numCandidates: 100,
+        }
+      },
+      {
+        $project: {
+          name: 1,
+          email: 1,
+          photo: 1,
+          about: 1,
+          score: { $meta: "vectorSearchScore" }
+        }
+      }
+    ]);
+  };
+
 const User = mongoose.model("User", userSchema);
 
 export { User, Status };

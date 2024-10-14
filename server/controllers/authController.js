@@ -46,12 +46,13 @@ const callback = async (req, res) => {
       path: '/',
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'strict',
     });
 
     return res.redirect(`/`);
   } catch (error) {
-    return res.redirect('/signin');
+    console.error('Error authenticating user:', error);
+    return res.redirect('/signin'); 
   }
 };
 

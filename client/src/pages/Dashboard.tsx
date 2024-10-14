@@ -9,7 +9,6 @@ import Community from '../components/tabs/Community';
 const Dashboard: React.FC = () => {
   const user = useUserStore(state => state.user);
   const [currentTab, setCurrentTab] = useState<string>("search");
-
   return (
     <section className="flex">
       <Navbar currentTab={currentTab} setCurrentTab={setCurrentTab} />
@@ -18,9 +17,7 @@ const Dashboard: React.FC = () => {
           currentTab === "editProfile" ? (
             <EditProfile />
           ) : currentTab === "search" ? (
-            <Search 
-              setCurrentTab={setCurrentTab}
-            />
+            <Search />
           ) : currentTab === "chat" ? (
             <ChatPage /> // Pass the chatReceiver to ChatPage
           ) : (
