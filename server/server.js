@@ -50,7 +50,7 @@ app.get('/', withAuth, (req, res) => {
 });
 
 // Catch-all route for client-side routing
-app.get('*', (req, res) => {
+app.get('/signin', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
 });
 
