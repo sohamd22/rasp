@@ -3,8 +3,12 @@ import cors from "cors";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import path from "path";
+import { createServer } from "http";
+import { Server } from "socket.io";
+
 import { withAuth } from './middleware/authMiddleware.js';
 import apiRouter from './api.js';
+import { setConnectedClient, removeConnectedClient, emitToConnectedClient } from './utils/connectedClients.js';
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -16,6 +20,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Setup Express App
 const app = express();
+const server = createServer(app);
 
 app.use(cors({
   credentials: true,
@@ -46,8 +51,23 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/dist', 'index.html'));
 });
 
+// Setup Socket.io
+const io = new Server(server);
+
+io.on('connection', (socket) => {
+  const { userId } = socket.handshake.query;
+
+  console.log(`User ${userId} connected.`);
+  setConnectedClient(userId, socket);
+
+  socket.on('disconnect', () => {
+    console.log(`User ${userId} disconnected.`);
+    removeConnectedClient(userId);
+  });
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
