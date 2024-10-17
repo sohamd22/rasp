@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useUserStore } from '../store/userStore';
+import useUserStore from '../../stores/userStore';
 
 const Devspace = () => {
     const { user } = useUserStore();
@@ -8,6 +8,8 @@ const Devspace = () => {
         const response = await axios.post('/api/devspace/join', {
             userId: user._id
         });
+
+        console.log(response.data);
     }
   return (
     <div>
