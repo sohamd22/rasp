@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
           ) : currentTab === "chat" ? (
             <ChatPage /> // Pass the chatReceiver to ChatPage
           ) : (
-            <Community />
+            <Community setCurrentTab={setCurrentTab} />
           )
         ) : null}
       </div>

@@ -14,7 +14,7 @@ interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({ user, selectUser }) => {
   return (
-    <div className='w-52 border border-gray-600' onClick={() => selectUser(user)}>
+    <div className='w-52 border border-gray-600 cursor-pointer' onClick={() => selectUser(user)}>
       <div className="bg-gradient-to-br from-orange-300/100 to-orange-400/100">
         <img src={user.photo} alt={user.name} className='w-full h-32 object-cover border border-gray-600 mix-blend-multiply' />
       </div>
