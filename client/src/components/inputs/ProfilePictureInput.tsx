@@ -51,7 +51,7 @@ const ProfilePictureInput: React.FC<InputProps> = ({ label, name, setPhoto }) =>
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = async () => {
-      const optimizedPhoto = await compressBase64Image(reader.result, 200000, 800, 600);
+      const optimizedPhoto = await compressBase64Image(reader.result, 60000, 800, 600);
       setPhoto(optimizedPhoto);
     }
     reader.onerror = (error) => {
