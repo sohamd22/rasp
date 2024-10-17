@@ -18,8 +18,10 @@ interface UserState {
   isLoading: boolean;
   loadingMessage: string;
   setLoading: (isLoading: boolean, message: string) => void;
-  error: string | null;
-  setError: (error: string | null) => void;
+  statusError: string | null;
+  setStatusError: (error: string | null) => void;
+  profileError: string | null;
+  setProfileError: (error: string | null) => void;
 }
 
 const useUserStore = create<UserState>((set) => ({
@@ -35,11 +37,13 @@ const useUserStore = create<UserState>((set) => ({
   isUpdatingProfile: false,
   isLoading: false,
   loadingMessage: '',
-  error: null,
-  setError: (error) => set({ error }),
+  statusError: null,
+  setStatusError: (error) => set({ statusError: error }),
+  profileError: null,
+  setProfileError: (error) => set({ profileError: error }),
   setLoading: (isLoading, message) => set({ isLoading, loadingMessage: message }),
   fetchUserStatus: async (userId) => {
-    set({ isLoading: true, loadingMessage: 'Fetching user status...', error: null });
+    set({ isLoading: true, loadingMessage: 'Fetching user status...', statusError: null, profileError: null });
     try {
       const response = await axios.get(`/api/user/status/${userId}`);
       set({ status: { content: response.data.status, duration: response.data.duration, expirationDate: response.data.expirationDate }, isLoading: false, loadingMessage: '' });
@@ -48,16 +52,16 @@ const useUserStore = create<UserState>((set) => ({
       set({ 
         isLoading: false, 
         loadingMessage: '', 
-        error: axios.isAxiosError(error) 
+        statusError: axios.isAxiosError(error) 
           ? error.response?.data?.message || 'Error fetching user status' 
           : 'An unexpected error occurred'
       });
     }
   },
   updateUserStatus: async (userId, content, duration) => {
-    set({ isUpdatingStatus: true, error: null });
+    set({ isUpdatingStatus: true, statusError: null });
     if (!content || !duration) {
-      set({ error: 'Status and duration are required' });
+      set({ statusError: 'Status and duration are required' });
       return;
     }
     try {
@@ -69,19 +73,19 @@ const useUserStore = create<UserState>((set) => ({
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 429) {
           const remainingCooldown = error.response.data.remainingCooldown;
-          set({ error: `Status update on cooldown. Please wait ${Math.ceil(remainingCooldown / 1000)} seconds.` });
+          set({ statusError: `Status update on cooldown. Please wait ${Math.ceil(remainingCooldown / 1000)} seconds.` });
         } else {
-          set({ error: error.response?.data?.message || 'Error updating user status' });
+          set({ statusError: error.response?.data?.message || 'Error updating user status' });
         }
       } else {
-        set({ error: 'An unexpected error occurred' });
+        set({ statusError: 'An unexpected error occurred' });
       }
       console.error('Error updating user status:', error);
       throw error;
     }
   },
   updateUserProfile: async (userData: any) => {
-    set({ isUpdatingProfile: true, error: null });
+    set({ isUpdatingProfile: true, profileError: null });
     try {
       await axios.patch(`/api/user/save`, { user: userData });
       set({ user: userData, isUpdatingProfile: false });
@@ -90,12 +94,12 @@ const useUserStore = create<UserState>((set) => ({
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 429) {
           const remainingCooldown = error.response.data.remainingCooldown;
-          set({ error: `Profile update on cooldown. Please wait ${Math.ceil(remainingCooldown / 1000)} seconds.` });
+          set({ profileError: `Profile update on cooldown. Please wait ${Math.ceil(remainingCooldown / 1000)} seconds.` });
         } else {
-          set({ error: error.response?.data?.message || 'Error updating user profile' });
+          set({ profileError: error.response?.data?.message || 'Error updating user profile' });
         }
       } else {
-        set({ error: 'An unexpected error occurred' });
+        set({ profileError: 'An unexpected error occurred' });
       }
       console.error('Error updating user profile:', error);
       throw error;

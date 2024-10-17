@@ -10,7 +10,7 @@ import useSearchStore from "../../stores/searchStore";
 import useChatStore from "../../stores/chatStore";
 
 const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrentTab }) => {
-  const { user, status, setStatus, fetchUserStatus, updateUserStatus } = useUserStore();
+  const { user, status, setStatus, fetchUserStatus, updateUserStatus, statusError  } = useUserStore();
   const { 
     query, 
     searchResults, 
@@ -135,14 +135,14 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
               save
             </SubmitButton>
           </div>
-
         </form>
-        
+  
         {status?.content && status?.expirationDate ? (
-          <div>
+          <div>            
             <p>
               Status expires in {calculateRemainingTime(status.expirationDate.toString())}
             </p>
+            {statusError && <p className="text-red-500">{statusError}</p>}
           </div>
         ) : null}
 

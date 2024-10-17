@@ -29,7 +29,7 @@ const defaultUser: any = {
 }
 
 const UserProfile = () => {
-    const { user, updateUserProfile, isUpdatingProfile } = useUserStore();
+    const { user, updateUserProfile, isUpdatingProfile, profileError } = useUserStore();
 
     const [userData, setUserData] = useState<any>({
         ...defaultUser,
@@ -157,6 +157,8 @@ const UserProfile = () => {
                     <SubmitButton onClick={saveUser} loading={isUpdatingProfile}>
                       save
                     </SubmitButton>
+
+                    {profileError && <p className="text-red-500">{profileError}</p>}
                 </form>
             </div>
 
