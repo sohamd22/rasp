@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { LRUCache } from 'lru-cache';
 
 interface ChatMessage {
   _id: string;
@@ -44,11 +43,18 @@ interface ChatState {
   getMessages: (chatId: string, page: number, limit: number) => Promise<void>;
   saveMessage: (chatId: string, senderId: string, message: string) => Promise<void>;
   createChat: (users: string[], name?: string, isGroupChat?: boolean) => Promise<string>;
-  messageCache: LRUCache<string, ChatMessage[]>;
+  messageCache: {
+    get: (chatId: string) => ChatMessage[] | null;
+    set: (chatId: string, messages: ChatMessage[]) => void;
+    addMessage: (chatId: string, message: ChatMessage) => void;
+  };
   addMessageToCache: (chatId: string, message: ChatMessage) => void;
   updateChat: (updatedChat: Chat) => void;
   setError: (error: string | null) => void;
 }
+
+const CACHE_PREFIX = 'chat_messages_';
+const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
 
 const useChatStore = create<ChatState>((set, get) => ({
   chats: [],
@@ -81,14 +87,15 @@ const useChatStore = create<ChatState>((set, get) => ({
       const response = await axios.get<ChatMessage[]>(
         `/api/chat/get/${chatId}?page=${page}&limit=${limit}`
       );
-      set(state => {
+      set(() => {
         const newMessages = response.data;
-        const existingMessages = state.messageCache.get(chatId) || [];
+        const existingMessages = get().messageCache.get(chatId) || [];
         const updatedMessages = page === 1 ? newMessages : [...existingMessages, ...newMessages];
-        state.messageCache.set(chatId, updatedMessages);
-        state.messages = updatedMessages;
-        state.error = null;
-        return state;
+        get().messageCache.set(chatId, updatedMessages);
+        return {
+          messages: updatedMessages,
+          error: null
+        };
       });
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -154,16 +161,32 @@ const useChatStore = create<ChatState>((set, get) => ({
     }
     return '';
   },
-  messageCache: new LRUCache<string, ChatMessage[]>({
-    max: 100,
-    ttl: 1000 * 60 * 60, // Cache for 1 hour
-  }),
+  messageCache: {
+    get: (chatId: string) => {
+      const cachedData = localStorage.getItem(`${CACHE_PREFIX}${chatId}`);
+      if (cachedData) {
+        const { messages, timestamp } = JSON.parse(cachedData);
+        if (Date.now() - timestamp < CACHE_EXPIRY) {
+          return messages;
+        } else {
+          localStorage.removeItem(`${CACHE_PREFIX}${chatId}`);
+        }
+      }
+      return null;
+    },
+    set: (chatId: string, messages: ChatMessage[]) => {
+      localStorage.setItem(`${CACHE_PREFIX}${chatId}`, JSON.stringify({
+        messages,
+        timestamp: Date.now()
+      }));
+    },
+    addMessage: (chatId: string, message: ChatMessage) => {
+      const cachedMessages = get().messageCache.get(chatId) || [];
+      get().messageCache.set(chatId, [...cachedMessages, message]);
+    }
+  },
   addMessageToCache: (chatId, message) => {
-    set(state => {
-      const chatMessages = state.messageCache.get(chatId) || [];
-      state.messageCache.set(chatId, [...chatMessages, message]);
-      return state;
-    });
+    get().messageCache.addMessage(chatId, message);
   },
   updateChat: (updatedChat: Chat) => set((state) => {
     try {

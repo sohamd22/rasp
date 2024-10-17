@@ -119,7 +119,7 @@ const UserProfile = () => {
                         maxLength={50}
                     />
                     <ArrayInput
-                        label="your skills"
+                        label="your skills (hit enter to add)"
                         name="skills"
                         placeholder="e.g. running, business, etc."
                         items={userData.about.skills}
@@ -128,7 +128,7 @@ const UserProfile = () => {
                         maxItems={10}
                     />
                     <ArrayInput
-                        label="your hobbies"
+                        label="your hobbies (hit enter to add)"
                         name="hobbies"
                         placeholder="e.g. ping-pong, shrimping, etc."
                         items={userData.about.hobbies}
@@ -139,7 +139,7 @@ const UserProfile = () => {
                     <ArrayInput
                         label="your socials (must start with http/https)"
                         name="socials"
-                        placeholder="e.g. linkedin, github, etc."
+                        placeholder="e.g. https://linkedin.com/in/name etc."
                         items={userData.about.socials}
                         setItems={(items: string[]) => setUserData((userData: any) => ({ ...userData, about: { ...userData.about, socials: items.filter(item => item.startsWith("http")) } }))}
                         maxLength={100}

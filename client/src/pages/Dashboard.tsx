@@ -6,10 +6,22 @@ import Search from '../components/tabs/Search';
 import ChatPage from '../components/tabs/ChatPage';
 import Community from '../components/tabs/Community';
 import Devspace from '../components/tabs/Devspace';
+import useSearchStore from '../stores/searchStore';
+import useCommunityStore from '../stores/communityStore';
+import useChatStore from '../stores/chatStore';
 
 const Dashboard: React.FC = () => {
   const { user, isUpdatingProfile, isUpdatingStatus } = useUserStore(state => state);
-  const [currentTab, setCurrentTab] = useState<string>("search");
+  const [currentTab, _setCurrentTab] = useState<string>("search");
+  const { setCurrentChatId, setMessages } = useChatStore(state => state);
+
+  const setCurrentTab = (tab: string) => {
+    _setCurrentTab(tab);
+    setCurrentChatId("");
+    setMessages([]);
+    useSearchStore.setState({ selectedUser: null });
+    useCommunityStore.setState({ selectedUser: null });
+  };
 
   return (
     <section className="flex">

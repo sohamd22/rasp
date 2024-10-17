@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useCallback, useState} from "react";
 import useUserStore from '../../stores/userStore';
 import useChatStore, { ChatMessage, Chat } from '../../stores/chatStore';
 import Message from "../chat/Message";
-import { formatDate } from "../../utils/formatDateTime";
+import { formatDate, formatTime } from "../../utils/formatDateTime";
 import Input from "../inputs/Input";
 import SubmitButton from "../inputs/SubmitButton";
 import axios from 'axios';
@@ -89,15 +89,15 @@ const ChatPage: React.FC = () => {
     };
 
     return (
-        <div className="flex h-full">
-            <div className="h-full w-64 text-white p-4" style={{ backgroundColor: '#262626' }}>
-                <h2 className="text-lg font-bold mb-4">chats</h2>
-                <ul className="space-y-2">
+        <div className="flex h-[75vh] rounded-2xl overflow-hidden">
+            <div className="h-full w-64 text-white bg-neutral-900">
+                <h2 className="text-lg font-bold p-5">chats</h2>
+                <ul className="">
                     {chats.map((chat: Chat, index: number) => (
                         <li
                             key={index}
                             onClick={() => handleChatSelect(chat)}
-                            className={`flex flex-col p-2 rounded-md cursor-pointer transition-all ${chat._id === currentChatId ? "bg-gray-600" : "bg-neutral-900"}`}
+                            className={`flex flex-col p-3 border-y border-neutral-700 cursor-pointer transition-all ${chat._id === currentChatId ? "bg-neutral-800" : ""}`}
                         >
                             <span className="font-medium flex justify-between items-center">
                                 {chat.isGroupChat ? chat.groupName : chat.otherUserName}
@@ -106,7 +106,7 @@ const ChatPage: React.FC = () => {
                                 )}
                             </span>
                             <span>
-                                {chat.lastMessage?.senderId === user._id ? "You" : chat.lastMessage?.senderName}: {chat.lastMessage?.content} - {formatDate(chat.lastMessage?.timestamp)}
+                                {chat.lastMessage?.senderId === user._id ? "You" : chat.lastMessage?.senderName}: {chat.lastMessage?.content} - {(formatDate(chat.lastMessage?.timestamp) === formatDate(new Date()) ? formatTime(chat.lastMessage?.timestamp) : formatDate(chat.lastMessage?.timestamp))}
                             </span>
                             </li>
                     ))}
@@ -116,10 +116,10 @@ const ChatPage: React.FC = () => {
             <div className="flex-1 p-6 bg-black">
                 <div className="h-full flex flex-col">
                     {currentChatId ? (
-                        <div className="overflow-y-scroll flex flex-col-reverse gap-4 h-full" onScroll={handleScroll}>
+                        <div className="overflow-y-auto flex flex-col-reverse gap-4 h-full pr-8" onScroll={handleScroll}>
                             <div ref={messagesEndRef} />
                             <div className='flex gap-4'>
-                                <Input name="message" placeholder="Hey, I think you're super cool!" value={message} setValue={setMessage} />
+                                <Input name="message" placeholder="Hey, I think you're super cool!" maxLength={200} value={message} setValue={setMessage} />
                                 <SubmitButton onClick={handleSaveMessage}>Send</SubmitButton>
                             </div>
 

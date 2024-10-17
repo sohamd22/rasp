@@ -58,7 +58,7 @@ const SelectedUserCard: React.FC<SelectedUserCardProps> = ({
 
         <div className="flex flex-col gap-1 border border-gray-600 px-3 py-4">
           <h2 className="text-lg font-semibold flex gap-2 items-center">about</h2>
-          <p>{selectedUser?.about?.bio}</p>
+          <p className="break-words">{selectedUser?.about?.bio}</p>
         </div>
 
         <div className="px-3 py-4 flex flex-col gap-2 border border-gray-600">

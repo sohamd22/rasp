@@ -3,7 +3,7 @@ const formatDate = (date: any) => {
 };
 
 const formatTime = (date: any) => {
-    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
 export { formatDate, formatTime };

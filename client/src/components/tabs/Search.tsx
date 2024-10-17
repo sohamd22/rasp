@@ -77,7 +77,7 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
   };
 
   return (
-    <div className="flex gap-20">
+    <div className="flex gap-20 overflow-y-auto">
       <div className="flex flex-col gap-12">
         <Heading>Search for people!</Heading>
         <form onSubmit={handleSearch} className="flex gap-4">

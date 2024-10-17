@@ -51,7 +51,7 @@ const EditUserCard: React.FC<EditUserCardProps> = ({ user }) => {
 
         <div className="flex flex-col gap-1 border border-gray-600 px-3 py-4">
           <h2 className="text-lg font-semibold flex gap-2 items-center">about</h2>
-          <p>{user.about.bio}</p>
+          <p className="break-words">{user.about.bio}</p>
         </div>
 
         <div className="px-3 py-4 flex flex-col gap-2 border border-gray-600">
