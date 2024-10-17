@@ -4,6 +4,7 @@ import UserCard from '../users/UserCard';
 import SelectedUserCard from '../users/SelectedUserCard';
 import useChatStore from '../../stores/chatStore';
 import useUserStore from '../../stores/userStore';
+
 const Community = ({ setCurrentTab }: { setCurrentTab: (tab: string) => void }) => {
   const { communityUsers, fetchCommunityUsers, selectedUser, setSelectedUser } = useCommunityStore();
   const { createChat, setCurrentChatId } = useChatStore();
@@ -34,7 +35,7 @@ const Community = ({ setCurrentTab }: { setCurrentTab: (tab: string) => void }) 
         </div>
 
         <div className="col-span-1">
-          {selectedUser && <SelectedUserCard selectedUser={selectedUser} openChat={openChat} />}
+          {selectedUser && <SelectedUserCard selectedUser={selectedUser} openChat={openChat} setCurrentTab={setCurrentTab} />}
         </div>
       </div>
     </div>

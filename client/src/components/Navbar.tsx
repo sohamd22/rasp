@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { AiOutlineSearch, AiOutlineMessage, AiOutlineTeam, AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineSearch, AiOutlineMessage, AiOutlineTeam, AiOutlineEdit, AiOutlineCode } from "react-icons/ai";
 import { IoMdLogOut } from "react-icons/io";
 
 interface NavbarProps {
@@ -32,12 +32,17 @@ const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab }) => {
                         <AiOutlineTeam size={24} className={currentTab === "community" ? "text-orange-500" : "text-white"} />
                     </Link>
                 </li>
+                <li onClick={() => setCurrentTab("devspace")}>
+                    <Link to="#" className={`flex items-center justify-center w-full h-16`}>
+                        <AiOutlineCode size={24} className={currentTab === "devspace" ? "text-orange-500" : "text-white"} />
+                    </Link>
+                </li>
 
                 <li className="justify-self-end">
                     <a href="/api/auth/logout" className={`flex items-center justify-center w-full h-16`}>
                         <IoMdLogOut size="24" className="text-red-500" />
                     </a>
-                </li>
+                </li>                
             </ul>
         </nav>
     );

@@ -6,12 +6,13 @@ import axios from 'axios';
 import useUserStore from './stores/userStore';
 import useSocketStore from './stores/socketStore';
 import useChatStore, { Chat, ChatMessage } from './stores/chatStore';
-
+import useDevspaceStore from './stores/devspaceStore';
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const { user, setUser } = useUserStore(state => state);
   const { socket, connectSocket, disconnectSocket } = useSocketStore(state => state);
   const { chats, currentChatId, messages, setMessages, addMessageToCache, updateChat } = useChatStore(state => state);
+  const { updateDevspaceInfo } = useDevspaceStore(state => state);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -88,6 +89,16 @@ const App: React.FC = () => {
       socket?.off('chat');
     };
   }, [socket, updateChat]);
+
+  useEffect(() => {
+    socket?.on('devspace-update', (updatedDevspace) => {
+      updateDevspaceInfo(updatedDevspace);
+    });
+
+    return () => {
+      socket?.off('devspace-update');
+    };
+  }, [socket, updateDevspaceInfo]);
 
   if (isAuthenticated === null) {
     return <div>Loading...</div>;

@@ -11,7 +11,7 @@ const useSocketStore = create<SocketState>((set) => ({
   socket: null,
   connectSocket: (userId: string) => {
     try {
-      const newSocket = io('https://rasp-deployment-production.up.railway.app', {
+      const newSocket = io('http://localhost:5000', {
         query: { userId },
         autoConnect: false
       });

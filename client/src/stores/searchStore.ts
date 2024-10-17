@@ -19,7 +19,7 @@ interface SearchState {
   setSelectedUser: (user: UserCardInfo | null) => void;
   setError: (error: string | null) => void;
   setIsLoading: (isLoading: boolean) => void;
-  searchUser: (query: string, currentUser: any) => Promise<void>;
+  searchUser: (query: string, userId: string) => Promise<void>;
 }
 
 const useSearchStore = create<SearchState>((set) => ({
@@ -33,16 +33,16 @@ const useSearchStore = create<SearchState>((set) => ({
   setSelectedUser: (user) => set({ selectedUser: user }),
   setError: (error) => set({ error }),
   setIsLoading: (isLoading) => set({ isLoading }),
-  searchUser: async (query, currentUser) => {
+  searchUser: async (query, userId) => {
     set({ isLoading: true, error: null });
     try {
       if (!query.trim()) {
         throw new Error('Search query cannot be empty');
       }
-      const response = await axios.post(`/api/user/search`, { query, user: currentUser });
-      set({ searchResults: response.data, error: null });
+      const response = await axios.post(`/api/user/search`, { query, userId: userId });
+      set({ searchResults: response.data, error: null, selectedUser: null });
     } catch (error) {
-      set({ searchResults: [] });
+      set({ searchResults: [], selectedUser: null });
       if (axios.isAxiosError(error)) {
         if (error.response) {
           if (error.response.status === 429) {

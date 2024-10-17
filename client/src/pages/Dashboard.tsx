@@ -5,6 +5,7 @@ import EditProfile from '../components/tabs/EditProfile';
 import Search from '../components/tabs/Search';
 import ChatPage from '../components/tabs/ChatPage';
 import Community from '../components/tabs/Community';
+import Devspace from '../components/tabs/Devspace';
 
 const Dashboard: React.FC = () => {
   const user = useUserStore(state => state.user);
@@ -20,9 +21,11 @@ const Dashboard: React.FC = () => {
             <Search setCurrentTab={setCurrentTab} />
           ) : currentTab === "chat" ? (
             <ChatPage /> // Pass the chatReceiver to ChatPage
-          ) : (
+          ) : currentTab === "community" ? (
             <Community setCurrentTab={setCurrentTab} />
-          )
+          ) : currentTab === "devspace" ? (
+            <Devspace />
+          ) : null
         ) : null}
       </div>
     </section>

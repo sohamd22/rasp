@@ -9,7 +9,6 @@ import useUserStore from "../../stores/userStore";
 import useSearchStore from "../../stores/searchStore";
 import useChatStore from "../../stores/chatStore";
 
-
 const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrentTab }) => {
   const { user, status, setStatus, fetchUserStatus, updateUserStatus } = useUserStore();
   const { 
@@ -34,7 +33,7 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
     e.preventDefault();
     setIsSearching(true);
     try {
-      await searchUser(query, user);
+      await searchUser(query, user?._id);
     } finally {
       setIsSearching(false);
     }
@@ -155,7 +154,7 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
       </div>
 
       <div className="col-span-1">
-        {selectedUser && <SelectedUserCard selectedUser={selectedUser} openChat={openChat} />}
+        {selectedUser && <SelectedUserCard selectedUser={selectedUser} openChat={openChat} setCurrentTab={setCurrentTab} />}
       </div>
     </div>
   );
