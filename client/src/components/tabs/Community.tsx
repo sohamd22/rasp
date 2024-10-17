@@ -4,6 +4,8 @@ import UserCard from '../users/UserCard';
 import SelectedUserCard from '../users/SelectedUserCard';
 import useChatStore from '../../stores/chatStore';
 import useUserStore from '../../stores/userStore';
+import Heading from '../text/Heading';
+import Highlight from '../text/Highlight';
 
 const Community = ({ setCurrentTab }: { setCurrentTab: (tab: string) => void }) => {
   const { communityUsers, fetchCommunityUsers, selectedUser, setSelectedUser } = useCommunityStore();
@@ -24,9 +26,9 @@ const Community = ({ setCurrentTab }: { setCurrentTab: (tab: string) => void }) 
 
   return (
     <div className="container mx-auto px-4 overflow-y-auto">
-      <div className="flex flex-col md:flex-row gap-8 md:gap-20">
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold mb-8">Community</h1>
+      <div className="md:grid md:grid-cols-5 flex flex-col md:flex-row gap-8 md:gap-20">
+        <div className="flex flex-col gap-16 md:col-span-3">
+        <Heading>The RASP <Highlight>Community</Highlight></Heading>
           <div className="flex flex-wrap gap-4">
             {communityUsers.map((user) => (
               <UserCard
@@ -38,7 +40,7 @@ const Community = ({ setCurrentTab }: { setCurrentTab: (tab: string) => void }) 
           </div>
         </div>
 
-        <div className="w-full md:w-1/3 lg:w-1/4">
+        <div className="w-full md:col-span-2">
           {selectedUser && (
             <SelectedUserCard
               selectedUser={selectedUser}

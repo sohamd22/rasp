@@ -3,6 +3,8 @@ import useUserStore from '../../stores/userStore';
 import useDevspaceStore from '../../stores/devspaceStore';
 import UserCard from '../users/UserCard';
 import { Confetti } from '@neoconfetti/react';
+import Heading from '../text/Heading';
+import Highlight from '../text/Highlight';
 
 
 const Devspace = () => {
@@ -45,14 +47,19 @@ const Devspace = () => {
 
     return (
         <div className="flex flex-col gap-6 p-4 max-w-full overflow-y-auto">
+          
             {!user?.isInDevspace ? (
-                <button onClick={joinDevspace} className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto">Join Devspace</button>
+              <div className="flex flex-col gap-12">
+                <Heading>join <Highlight>Devspace</Highlight></Heading>
+                <p className="text-xl">Build your own startup over a span of 5 weeks, with a chance to win upto $5000.</p>
+                <button onClick={joinDevspace} className="bg-orange-500 text-white px-6 py-3 rounded w-fit font-semibold text-xl">join (takes 1 click)</button>
+              </div>
             ) : (
                 <div className="sm:justify-normal sm:items-start sm:text-left overflow-hidden flex flex-col gap-6 justify-center items-center text-center">
                     <div className="absolute top-0 left-0 w-full h-1/2 mx-auto -z-10">
                         <Confetti />
                     </div>
-                    <h1 className="text-3xl sm:text-4xl font-bold text-center sm:text-left">Welcome to Devspace!</h1>
+                    <Heading>welcome to <Highlight>Devspace</Highlight>!</Heading>
 
                     <div className="flex flex-col gap-2">
                         <h2 className="text-xl sm:text-2xl font-bold">Your team</h2>
@@ -99,7 +106,7 @@ const Devspace = () => {
                         </div>
                     </div>
 
-                    {error && <p className="text-red-500 text-center sm:text-left">{error}</p>}
+                    {error && error.toLowerCase() !== 'failed to fetch devspace information' && <p className="text-red-500 text-center sm:text-left">{error}</p>}
                 </div>
             )}
         </div>

@@ -29,7 +29,7 @@ const SelectedUserCard: React.FC<SelectedUserCardProps> = ({
   const canSendInvite = team.length + sentInvitations.length < 3;
 
   return (
-    <div className="w-full max-w-[500px] mx-auto border border-gray-600 sticky top-10 right-0">
+    <div className="w-full mx-auto border border-gray-600 sticky top-10 right-0">
       <div className="bg-gradient-to-br from-orange-300/100 to-orange-400/100">
         <img
           src={selectedUser.photo}

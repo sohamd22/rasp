@@ -78,8 +78,8 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 md:gap-20 overflow-y-auto p-4">
-      <div className="flex flex-col gap-8 w-full md:w-2/3">
+    <div className="flex flex-col md:grid md:grid-cols-5 gap-8 md:gap-20 overflow-y-auto p-4">
+      <div className="flex flex-col gap-8 w-full md:col-span-3">
         <Heading><Highlight>Search</Highlight> for people!</Heading>
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
           <input
@@ -148,7 +148,7 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
         )}
         </div>
 
-        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <ul className="flex flex-wrap gap-4">
           {isSearching ? (
             <div role="status" className="space-y-8 animate-pulse md:space-y-0 md:space-x-8 rtl:space-x-reverse md:flex md:items-center">
               <div className="flex flex-col gap-4 w-48 p-4 h-60 rounded bg-neutral-800">
@@ -184,7 +184,7 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
         </ul>
       </div>
 
-      <div className="w-full md:w-1/3">
+      <div className="w-full md:col-span-2">
         {selectedUser && <SelectedUserCard selectedUser={selectedUser} openChat={openChat} setCurrentTab={setCurrentTab} />}
       </div>
     </div>
