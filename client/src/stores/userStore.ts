@@ -59,11 +59,11 @@ const useUserStore = create<UserState>((set) => ({
     }
   },
   updateUserStatus: async (userId, content, duration) => {
-    set({ isUpdatingStatus: true, statusError: null });
     if (!content || !duration) {
       set({ statusError: 'Status and duration are required' });
       return;
     }
+    set({ isUpdatingStatus: true, statusError: null });    
     try {
       const expirationDate = new Date(Date.now() + (duration === "24h" ? 24 : (duration === "48h" ? 2 * 24 : 7 * 24)) * 60 * 60 * 1000);
       await axios.patch(`/api/user/status`, { status: content, duration, expirationDate, userId });
