@@ -1,11 +1,12 @@
 import { AiOutlineMessage } from "react-icons/ai";
-
+import useUserStore from "../../stores/userStore";
 interface SelectedUserCardProps {
   selectedUser: any;
   openChat: (receiverId: string) => void;
 }
 
 const SelectedUserCard: React.FC<SelectedUserCardProps> = ({ selectedUser, openChat }) => {
+  const { user } = useUserStore();
   return (
     <div className={`w-[500px] border border-gray-600 sticky top-10 right-0`}>
       <div className="bg-gradient-to-br from-orange-300/100 to-orange-400/100">
@@ -71,10 +72,12 @@ const SelectedUserCard: React.FC<SelectedUserCardProps> = ({ selectedUser, openC
             ))}
           </div>
         </div>
-
+        {
+          selectedUser._id !== user._id &&
         <button className="px-4 py-2 w-fit bg-gradient-to-br from-orange-400 to-orange-600 text-lg text-white mx-3 my-4 flex gap-2 items-center" onClick={() => openChat(selectedUser._id)}>
           Chat <AiOutlineMessage size="1rem" />
         </button>
+        } 
       </div>
     </div>
   );
