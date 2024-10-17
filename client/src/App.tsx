@@ -12,7 +12,7 @@ const App: React.FC = () => {
   const { user, setUser } = useUserStore(state => state);
   const { socket, connectSocket, disconnectSocket } = useSocketStore(state => state);
   const { chats, currentChatId, messages, setMessages, addMessageToCache, updateChat } = useChatStore(state => state);
-  const { updateDevspaceInfo } = useDevspaceStore(state => state);
+  const { updateDevspaceInfo, fetchDevspaceInfo } = useDevspaceStore(state => state);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -91,6 +91,10 @@ const App: React.FC = () => {
   }, [socket, updateChat]);
 
   useEffect(() => {
+    if (user) {
+      fetchDevspaceInfo(user._id);
+    }
+
     socket?.on('devspace-update', (updatedDevspace) => {
       updateDevspaceInfo(updatedDevspace);
     });
@@ -98,7 +102,7 @@ const App: React.FC = () => {
     return () => {
       socket?.off('devspace-update');
     };
-  }, [socket, updateDevspaceInfo]);
+  }, [socket, updateDevspaceInfo, fetchDevspaceInfo, user]);
 
   if (isAuthenticated === null) {
     return <div>Loading...</div>;
