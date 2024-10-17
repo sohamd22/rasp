@@ -10,6 +10,7 @@ import Devspace from '../components/tabs/Devspace';
 const Dashboard: React.FC = () => {
   const user = useUserStore(state => state.user);
   const [currentTab, setCurrentTab] = useState<string>("search");
+
   return (
     <section className="flex">
       <Navbar currentTab={currentTab} setCurrentTab={setCurrentTab} />

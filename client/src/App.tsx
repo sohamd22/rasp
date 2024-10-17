@@ -7,6 +7,7 @@ import useUserStore from './stores/userStore';
 import useSocketStore from './stores/socketStore';
 import useChatStore, { Chat, ChatMessage } from './stores/chatStore';
 import useDevspaceStore from './stores/devspaceStore';
+
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const { user, setUser } = useUserStore(state => state);
@@ -109,11 +110,13 @@ const App: React.FC = () => {
   }
 
   return (
-    <Routes>
-      <Route path='/signin' element={isAuthenticated ? <Navigate to="/" /> : <Signin />} />
-      <Route path='/' element={isAuthenticated ? <Dashboard /> : <Navigate to="/signin" />} />
-      <Route path='*' element={<Navigate to="/" />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path='/signin' element={isAuthenticated ? <Navigate to="/" /> : <Signin />} />
+        <Route path='/' element={isAuthenticated ? <Dashboard /> : <Navigate to="/signin" />} />
+        <Route path='*' element={<Navigate to="/" />} />
+      </Routes>
+    </>
   );
 };
 

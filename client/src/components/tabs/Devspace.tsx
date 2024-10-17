@@ -2,6 +2,8 @@ import axios from 'axios';
 import useUserStore from '../../stores/userStore';
 import useDevspaceStore from '../../stores/devspaceStore';
 import UserCard from '../users/UserCard';
+import { Confetti } from '@neoconfetti/react';
+
 
 const Devspace = () => {
     const { user, setUser } = useUserStore();
@@ -15,6 +17,7 @@ const Devspace = () => {
         error,
         setError,
     } = useDevspaceStore();
+    
 
     const joinDevspace = async () => {
         try {
@@ -45,7 +48,10 @@ const Devspace = () => {
             {!user?.isInDevspace ? (
                 <button onClick={joinDevspace} className="bg-blue-500 text-white px-4 py-2 rounded">Join Devspace</button>
             ) : (
-                <>
+                <div className="overflow-hidden flex flex-col gap-6">
+                  <div className="absolute top-0 left-0 w-full h-1/2 mx-auto -z-10">
+                    <Confetti />
+                  </div>
                     <h1 className="text-4xl font-bold">Welcome to Devspace!</h1>
 
                     <div className="flex flex-col gap-2">
@@ -90,7 +96,7 @@ const Devspace = () => {
                     </div>
 
                     {error && <p className="text-red-500">{error}</p>}
-                </>
+                </div>
             )}
         </div>
     )
