@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import UserCard from "../users/UserCard";
 import SelectedUserCard from "../users/SelectedUserCard";
 import Heading from "../text/Heading";
@@ -7,7 +7,6 @@ import SelectInput from "../inputs/SelectInput";
 import SubmitButton from "../inputs/SubmitButton";
 import useUserStore from "../../stores/userStore";
 import useSearchStore from "../../stores/searchStore";
-// import isToxic from "../../utils/isToxic";
 import useChatStore from "../../stores/chatStore";
 
 
@@ -31,12 +30,15 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
     fetchUserStatus(user?._id);
   }, [user?._id, fetchUserStatus]);
 
-  const handleSearch = async (e: React.FormEvent) => {
+  const handleSearch = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSearching(true);
-    await searchUser(query, user);
-    setIsSearching(false);
-  };
+    try {
+      await searchUser(query, user);
+    } finally {
+      setIsSearching(false);
+    }
+  }, [query, user, searchUser]);
 
   const openChat = async (receiverId: string) => {
     const chatId = await createChat([user._id, receiverId]);
@@ -54,11 +56,6 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
       return;
     }
 
-    // if (await isToxic(status?.content)) {
-    //   alert("Your status contains inappropriate content. Please remove it before saving.");
-    //   return;
-    // }
-
     await updateUserStatus(user?._id, status?.content, status.duration);
   }
 
@@ -72,7 +69,7 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
     const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 
     if (days > 0) {
-      return `${days} day(s)`;
+      return `${days} day(s) ${hours} hour(s)`;
     } else if (hours > 0) {
       return `${hours} hour(s)`;
     } else {
@@ -142,10 +139,10 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
 
         </form>
         
-        {user?.about?.status?.content && user?.about?.status?.expirationDate ? (
+        {status?.content && status?.expirationDate ? (
           <div>
             <p>
-              Status expires in {calculateRemainingTime(user.about.status.expirationDate)}
+              Status expires in {calculateRemainingTime(status.expirationDate.toString())}
             </p>
           </div>
         ) : null}

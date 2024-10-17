@@ -41,45 +41,53 @@ const App: React.FC = () => {
   }, [setUser, connectSocket, disconnectSocket]);
 
   useEffect(() => {
-    socket?.on('connect', () => {
+    const onConnect = () => {
       console.log('Connected to the server');
-    });
-  }, [socket]);
+    };
+
+    const onMessage = (newMessage: ChatMessage) => {
+      addMessageToCache(newMessage.chat, newMessage);
+      
+      if(newMessage.chat === currentChatId) {
+        setMessages([...messages, newMessage]);
+      }        
+        
+      const updatedChat = chats.find((chat: Chat) => chat._id === newMessage.chat);
+      if (updatedChat) {
+        updateChat({
+          ...updatedChat,
+          lastMessage: {
+            messageId: newMessage._id,
+            content: newMessage.content,
+            timestamp: newMessage.timestamp,
+            senderName: newMessage.sender === user._id ? user.name : updatedChat.otherUserName,
+            senderId: newMessage.sender
+          },
+          unreadMessages: newMessage.sender !== user._id && newMessage.chat !== currentChatId
+            ? { ...updatedChat.unreadMessages, [user._id]: true }
+            : updatedChat.unreadMessages
+        });
+      }
+    };
+
+    socket?.on('connect', onConnect);
+    socket?.on('message', onMessage);
+
+    return () => {
+      socket?.off('connect', onConnect);
+      socket?.off('message', onMessage);
+    };
+  }, [socket, currentChatId, chats, user, updateChat, addMessageToCache, messages, setMessages]);
 
   useEffect(() => {
-    socket?.on('message', (newMessage: ChatMessage) => {
-        addMessageToCache(newMessage.chat, newMessage);
-        
-        if(newMessage.chat === currentChatId) {
-          setMessages([...messages, newMessage]);
-        }        
-        
-        const updatedChat = chats.find((chat: Chat) => chat._id === newMessage.chat);
-        if (updatedChat) {
-            updatedChat.lastMessage = {
-                messageId: newMessage._id,
-                content: newMessage.content,
-                timestamp: newMessage.timestamp,
-                senderName: newMessage.sender === user._id ? user.name : updatedChat.otherUserName,
-                senderId: newMessage.sender
-            };
-            if (newMessage.sender !== user._id && newMessage.chat !== currentChatId) {
-                updatedChat.unreadMessages = { ...updatedChat.unreadMessages, [user._id]: true };
-            }
-            updateChat(updatedChat);
-        }
+    socket?.on('chat', (updatedChat: Chat) => {
+      updateChat(updatedChat);
     });
 
     return () => {
-        socket?.off('message');
+      socket?.off('chat');
     };
-}, [socket, messages, user, setMessages, currentChatId, chats, updateChat, addMessageToCache]);
-
-useEffect(() => {
-    socket?.on('chat', (updatedChat: Chat) => {
-        updateChat(updatedChat);
-    });
-}, [socket, updateChat]);
+  }, [socket, updateChat]);
 
   if (isAuthenticated === null) {
     return <div>Loading...</div>;

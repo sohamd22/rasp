@@ -7,8 +7,9 @@ interface UserState {
   status: {
     content: string;
     duration: string;
+    expirationDate: Date;
   };
-  setStatus: (status: { content: string; duration: string }) => void;
+  setStatus: (status: { content: string; duration: string; expirationDate: Date }) => void;
   fetchUserStatus: (userId: string) => Promise<void>;
   updateUserStatus: (userId: string, content: string, duration: string) => Promise<void>;
   updateUserProfile: (userData: any) => Promise<void>;
@@ -27,6 +28,7 @@ const useUserStore = create<UserState>((set) => ({
   status: {
     content: '',
     duration: '',
+    expirationDate: new Date(),
   },
   setStatus: (status) => set({ status }),
   isUpdatingStatus: false,
@@ -40,7 +42,7 @@ const useUserStore = create<UserState>((set) => ({
     set({ isLoading: true, loadingMessage: 'Fetching user status...', error: null });
     try {
       const response = await axios.get(`/api/user/status/${userId}`);
-      set({ status: response.data, isLoading: false, loadingMessage: '' });
+      set({ status: { content: response.data.status, duration: response.data.duration, expirationDate: response.data.expirationDate }, isLoading: false, loadingMessage: '' });
     } catch (error) {
       console.error('Error fetching user status:', error);
       set({ 
@@ -54,9 +56,14 @@ const useUserStore = create<UserState>((set) => ({
   },
   updateUserStatus: async (userId, content, duration) => {
     set({ isUpdatingStatus: true, error: null });
+    if (!content || !duration) {
+      set({ error: 'Status and duration are required' });
+      return;
+    }
     try {
-      await axios.patch(`/api/user/status`, { status: content, duration, userId });
-      set({ status: { content, duration }, isUpdatingStatus: false });
+      const expirationDate = new Date(Date.now() + (duration === "24h" ? 24 : (duration === "48h" ? 2 * 24 : 7 * 24)) * 60 * 60 * 1000);
+      await axios.patch(`/api/user/status`, { status: content, duration, expirationDate, userId });
+      set({ status: { content, duration, expirationDate }, isUpdatingStatus: false });
     } catch (error) {
       set({ isUpdatingStatus: false });
       if (axios.isAxiosError(error)) {
