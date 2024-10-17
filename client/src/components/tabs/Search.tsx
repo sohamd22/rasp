@@ -147,9 +147,38 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
         ) : null}
 
         <ul className="flex flex-wrap gap-4">
-          {searchResults.map((user, index) => (
-            <UserCard key={index} user={user} selectUser={setSelectedUser} />
-          ))}
+          {isSearching ? (
+            <div role="status" className="space-y-8 animate-pulse md:space-y-0 md:space-x-8 rtl:space-x-reverse md:flex md:items-center">
+              <div className="flex flex-col gap-4 w-48 p-4 h-60 rounded bg-neutral-800">
+                  <div className="flex items-center justify-center w-40 h-28 rounded bg-neutral-700">
+                  </div>
+                  <div className="flex items-center justify-center w-40 h-6 rounded bg-neutral-700">
+                  </div>
+                  <div className="flex items-center justify-center w-40  h-12 rounded bg-neutral-700">
+                  </div>
+              </div>
+              <div className="flex flex-col gap-4 w-48 p-4 h-60 rounded bg-neutral-800">
+                  <div className="flex items-center justify-center w-40 h-28 rounded bg-neutral-700">
+                  </div>
+                  <div className="flex items-center justify-center w-40 h-6 rounded bg-neutral-700">
+                  </div>
+                  <div className="flex items-center justify-center w-40  h-12 rounded bg-neutral-700">
+                  </div>
+              </div>
+              <div className="flex flex-col gap-4 w-48 p-4 h-60 rounded bg-neutral-800">
+                  <div className="flex items-center justify-center w-40 h-28 rounded bg-neutral-700">
+                  </div>
+                  <div className="flex items-center justify-center w-40 h-6 rounded bg-neutral-700">
+                  </div>
+                  <div className="flex items-center justify-center w-40  h-12 rounded bg-neutral-700">
+                  </div>
+              </div>
+          </div>
+          ) : (
+            searchResults.map((user, index) => (
+              <UserCard key={index} user={user} selectUser={setSelectedUser} />
+            ))
+          )}
         </ul>
       </div>
 
