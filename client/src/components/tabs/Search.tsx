@@ -8,6 +8,7 @@ import SubmitButton from "../inputs/SubmitButton";
 import useUserStore from "../../stores/userStore";
 import useSearchStore from "../../stores/searchStore";
 import useChatStore from "../../stores/chatStore";
+import Highlight from "../text/Highlight";
 
 const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrentTab }) => {
   const { user, status, setStatus, fetchUserStatus, updateUserStatus, statusError  } = useUserStore();
@@ -77,17 +78,17 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
   };
 
   return (
-    <div className="flex gap-20 overflow-y-auto">
-      <div className="flex flex-col gap-12">
-        <Heading>Search for people!</Heading>
-        <form onSubmit={handleSearch} className="flex gap-4">
+    <div className="flex flex-col md:flex-row gap-8 md:gap-20 overflow-y-auto p-4">
+      <div className="flex flex-col gap-8 w-full md:w-2/3">
+        <Heading><Highlight>Search</Highlight> for people!</Heading>
+        <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
           <input
             type="text"
             name="search"
             id="search"
             value={query}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
-            className="bg-neutral-800 p-3 text-neutral-200 rounded-md w-96"
+            className="bg-neutral-800 p-3 text-neutral-200 rounded-md w-full sm:w-96"
             autoComplete="off"
             maxLength={80}
           />
@@ -99,14 +100,14 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
           </SubmitButton>
         </form>
 
-        {/* Status Input and Duration Dropdown Side-by-Side */}
         {error && (
           <div className="text-red-500 mt-2">{error}</div>
         )}
 
-        <form className="flex gap-4 items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-72"> {/* Apply width here */}
+        <div className="flex flex-col gap-4">
+          <form className="flex flex-col sm:flex-row gap-4 items-start sm:items-end">
+            <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 w-full sm:w-auto">
+            <div className="w-full sm:w-72">
               <Input 
                 label="Status" 
                 name="content" 
@@ -118,7 +119,7 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
                 maxLength={100}
               />
             </div>
-            <div className="w-30"> {/* Apply width here */}
+            <div className="sm:w-24">
               <SelectInput 
                 label="Duration" 
                 name="duration" 
@@ -130,23 +131,24 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
               />
             </div>
           </div>
-          <div className="mt-9">
+          <div className="w-full sm:w-auto">
             <SubmitButton onClick={setUserStatus}>
               save
             </SubmitButton>
           </div>
         </form>
   
-        {status?.content && status?.expirationDate ? (
+        {status?.content && status?.expirationDate && (
           <div>            
             <p>
               Status expires in {calculateRemainingTime(status.expirationDate.toString())}
             </p>
             {statusError && <p className="text-red-500">{statusError}</p>}
           </div>
-        ) : null}
+        )}
+        </div>
 
-        <ul className="flex flex-wrap gap-4">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {isSearching ? (
             <div role="status" className="space-y-8 animate-pulse md:space-y-0 md:space-x-8 rtl:space-x-reverse md:flex md:items-center">
               <div className="flex flex-col gap-4 w-48 p-4 h-60 rounded bg-neutral-800">
@@ -182,7 +184,7 @@ const Search: React.FC<{ setCurrentTab: (tab: string) => void }> = ({ setCurrent
         </ul>
       </div>
 
-      <div className="col-span-1">
+      <div className="w-full md:w-1/3">
         {selectedUser && <SelectedUserCard selectedUser={selectedUser} openChat={openChat} setCurrentTab={setCurrentTab} />}
       </div>
     </div>

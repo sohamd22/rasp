@@ -37,12 +37,12 @@ const ArrayInput: React.FC<ArrayInputProps> = ({ label, name, placeholder, items
     }
 
     return (
-        <div className='flex flex-col gap-2'>
-            <label htmlFor={name} className='text-white'>{label}</label>
-            <div className="bg-neutral-800 px-5 py-3 text-neutral-200 flex flex-wrap gap-2 rounded-md">
+        <div className='flex flex-col gap-2 w-full'>
+            <label htmlFor={name} className='text-white text-sm md:text-base'>{label}</label>
+            <div className="bg-neutral-800 px-3 py-2 md:px-4 md:py-3 text-neutral-200 flex flex-wrap gap-2 rounded-md">
                 {items ? items.map((value, index) => (
                     <span
-                        className='text-neutral-300 px-2 py-1 text-sm rounded-md bg-neutral-700 cursor-pointer hover:bg-red-500 hover:line-through'
+                        className='text-neutral-300 px-2 py-1 text-xs md:text-sm rounded-md bg-neutral-700 cursor-pointer hover:bg-red-500 hover:line-through break-all'
                         key={index}
                         onClick={() => {
                             setItems(items.filter((_, i) => i !== index));
@@ -53,26 +53,25 @@ const ArrayInput: React.FC<ArrayInputProps> = ({ label, name, placeholder, items
                 )) : <></>}
 
                 {(!maxItems || items.length < maxItems) && (
-                    <input
-                        type="text"
-                        autoComplete="off"
-                        id={name}
-                        name={name}
-                        placeholder={!items.length ? placeholder : "..."}
-                        value={value}
-                        className='text-neutral-200 outline-none bg-neutral-800 flex-grow'
-                        onChange={handleChange}
-                        onKeyDown={onKeyDown}
-                        maxLength={maxLength}
-                    />
-                )}
-
-                {(!maxItems || items.length < maxItems) && (
-                    <button onClick={addItem} className="text-xl place-self-end">+</button>
+                    <div className="flex-grow flex items-center">
+                        <input
+                            type="text"
+                            autoComplete="off"
+                            id={name}
+                            name={name}
+                            placeholder={!items.length ? placeholder : "..."}
+                            value={value}
+                            className='text-neutral-200 outline-none bg-neutral-800 w-full text-sm md:text-base'
+                            onChange={handleChange}
+                            onKeyDown={onKeyDown}
+                            maxLength={maxLength}
+                        />
+                        <button onClick={addItem} className="text-xl ml-2 focus:outline-none">+</button>
+                    </div>
                 )}
             </div>
             {maxItems && (
-                <p className="text-sm text-gray-400">{items.length}/{maxItems} items</p>
+                <p className="text-xs md:text-sm text-gray-400">{items.length}/{maxItems} items</p>
             )}
         </div>
     )

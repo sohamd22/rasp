@@ -9,6 +9,7 @@ import SubmitButton from "../inputs/SubmitButton";
 import Heading from "../text/Heading";
 import EditUserCard from "../users/EditUserCard";
 import ProfilePictureInput from "../inputs/ProfilePictureInput";
+import Highlight from "../text/Highlight";
 
 // import isToxic from "../../utils/isToxic";
 
@@ -62,11 +63,11 @@ const UserProfile = () => {
     };
 
     return (
-        <div className="grid grid-cols-2 gap-20">
-            <div className="flex flex-col gap-12">
-                <Heading>Enter your information</Heading>
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-20">
+            <div className="flex flex-col gap-8 md:gap-12">
+                <Heading>Edit your <Highlight>profile</Highlight></Heading>
 
-                <form onSubmit={e => e.preventDefault()} className="flex flex-col gap-6 col-span-1">
+                <form onSubmit={e => e.preventDefault()} className="flex flex-col gap-4 md:gap-6">
                     <ProfilePictureInput label="Upload your profile picture" name="pfp" setPhoto={(photo: any) => {
                         setUserData((userData: any) => ({ ...userData, photo }));
                     }} />
@@ -158,11 +159,11 @@ const UserProfile = () => {
                       save
                     </SubmitButton>
 
-                    {profileError && <p className="text-red-500">{profileError}</p>}
+                    {profileError && <p className="text-red-500 text-sm">{profileError}</p>}
                 </form>
             </div>
 
-            <div className="col-span-1">
+            <div className="mt-8 md:mt-0">
                 <EditUserCard user={{ ...user, ...userData }} />
             </div>
         </div>

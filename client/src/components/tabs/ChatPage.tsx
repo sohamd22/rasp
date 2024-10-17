@@ -26,6 +26,7 @@ const ChatPage: React.FC = () => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [isChatListOpen, setIsChatListOpen] = useState(false);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -89,14 +90,21 @@ const ChatPage: React.FC = () => {
     };
 
     return (
-        <div className="flex h-[75vh] rounded-2xl overflow-hidden">
-            <div className="h-full w-64 text-white bg-neutral-900">
-                <h2 className="text-lg font-bold p-5">chats</h2>
-                <ul className="">
+        <div className="flex flex-col md:flex-row h-[75vh] md:h-[calc(100vh-200px)] rounded-2xl overflow-hidden">
+            {/* Chat List */}
+            <div className={`${isChatListOpen ? 'h-full' : 'h-12'} md:h-full w-full md:w-64 text-white bg-neutral-900 transition-all duration-300 ease-in-out overflow-hidden`}>
+                <div className="flex justify-between items-center p-3 md:p-5 cursor-pointer md:cursor-default" onClick={() => setIsChatListOpen(!isChatListOpen)}>
+                    <h2 className="text-lg font-bold">Chats</h2>
+                    <span className="md:hidden">{isChatListOpen ? '▲' : '▼'}</span>
+                </div>
+                <ul className="overflow-y-auto max-h-[calc(100%-48px)] overflow-x-hidden">
                     {chats.map((chat: Chat, index: number) => (
                         <li
                             key={index}
-                            onClick={() => handleChatSelect(chat)}
+                            onClick={() => {
+                                handleChatSelect(chat);
+                                setIsChatListOpen(false);
+                            }}
                             className={`flex flex-col p-3 border-y border-neutral-700 cursor-pointer transition-all ${chat._id === currentChatId ? "bg-neutral-800" : ""}`}
                         >
                             <span className="font-medium flex justify-between items-center">
@@ -106,19 +114,19 @@ const ChatPage: React.FC = () => {
                                 )}
                             </span>
                             <span>
-                                {chat.lastMessage?.senderId === user._id ? "You" : chat.lastMessage?.senderName}: {chat.lastMessage?.content} - {(formatDate(chat.lastMessage?.timestamp) === formatDate(new Date()) ? formatTime(chat.lastMessage?.timestamp) : formatDate(chat.lastMessage?.timestamp))}
+                                {chat.lastMessage?.senderId === user._id ? "You" : chat.lastMessage?.senderName}: {chat.lastMessage?.content.slice(0, 10)}... - {(formatDate(chat.lastMessage?.timestamp) === formatDate(new Date()) ? formatTime(chat.lastMessage?.timestamp) : formatDate(chat.lastMessage?.timestamp))}
                             </span>
-                            </li>
+                        </li>
                     ))}
                 </ul>
             </div>
             {/* Main Chat Panel */}
-            <div className="flex-1 p-6 bg-black">
+            <div className="flex-1 p-3 md:p-6 bg-black">
                 <div className="h-full flex flex-col">
                     {currentChatId ? (
-                        <div className="overflow-y-auto flex flex-col-reverse gap-4 h-full pr-8" onScroll={handleScroll}>
+                        <div className="overflow-y-auto flex flex-col-reverse gap-4 h-full pr-2 md:pr-8" onScroll={handleScroll}>
                             <div ref={messagesEndRef} />
-                            <div className='flex gap-4'>
+                            <div className='flex gap-2 md:gap-4'>
                                 <Input name="message" placeholder="Hey, I think you're super cool!" maxLength={200} value={message} setValue={setMessage} />
                                 <SubmitButton onClick={handleSaveMessage}>Send</SubmitButton>
                             </div>
@@ -141,7 +149,7 @@ const ChatPage: React.FC = () => {
                         </div>
                     ) : (
                         <div className="flex items-center justify-center h-full">
-                            <p className="text-gray-500">Select a chat to start messaging!</p>
+                            <p className="text-gray-500 text-sm md:text-base">Select a chat to start messaging!</p>
                         </div>
                     )}
                 </div>
@@ -149,6 +157,5 @@ const ChatPage: React.FC = () => {
         </div>
     );
 };
-
 
 export default ChatPage;

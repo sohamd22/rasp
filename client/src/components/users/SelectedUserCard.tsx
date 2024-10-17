@@ -29,7 +29,7 @@ const SelectedUserCard: React.FC<SelectedUserCardProps> = ({
   const canSendInvite = team.length + sentInvitations.length < 3;
 
   return (
-    <div className={`w-[500px] border border-gray-600 sticky top-10 right-0`}>
+    <div className="w-full max-w-[500px] mx-auto border border-gray-600 sticky top-10 right-0">
       <div className="bg-gradient-to-br from-orange-300/100 to-orange-400/100">
         <img
           src={selectedUser.photo}
@@ -40,14 +40,14 @@ const SelectedUserCard: React.FC<SelectedUserCardProps> = ({
 
       <div className="flex flex-col">
         <div className="flex flex-col gap-1 border border-gray-600 px-3 py-4">
-          <h2 className="text-lg font-semibold flex gap-2 items-center">
+          <h2 className="text-lg font-semibold flex flex-wrap gap-2 items-center">
             {selectedUser.name}{' '}
-            <span className="text-base font-normal text-neutral-400">
+            <span className="text-sm font-normal text-neutral-400">
               {selectedUser?.about?.gender ? selectedUser.about.gender + ' |' : ''}{' '}
               {selectedUser?.about?.campus ? selectedUser.about.campus + ' campus' : ''}
             </span>
           </h2>
-          <p className="text-neutral-400">
+          <p className="text-sm text-neutral-400 break-words">
             - {selectedUser?.about?.major ? selectedUser.about.major + ' |' : ''}{' '}
               {selectedUser?.about?.standing ? selectedUser.about.standing + ' |' : ''}{' '}
             <a href={`mailto:${selectedUser.email}`} className="underline">
@@ -57,15 +57,15 @@ const SelectedUserCard: React.FC<SelectedUserCardProps> = ({
         </div>
 
         <div className="flex flex-col gap-1 border border-gray-600 px-3 py-4">
-          <h2 className="text-lg font-semibold flex gap-2 items-center">about</h2>
-          <p className="break-words">{selectedUser?.about?.bio}</p>
+          <h2 className="text-lg font-semibold">about</h2>
+          <p className="text-sm break-words">{selectedUser?.about?.bio}</p>
         </div>
 
         <div className="px-3 py-4 flex flex-col gap-2 border border-gray-600">
-          <h2 className="text-lg font-semibold flex gap-2 items-center">skills</h2>
+          <h2 className="text-lg font-semibold">skills</h2>
           <div className="text-neutral-200 flex flex-wrap gap-2">
             {selectedUser?.about?.skills.map((value: string, index: number) => (
-              <span className="text-neutral-300 px-2 py-1 text-sm rounded-md bg-neutral-700" key={index}>
+              <span className="text-neutral-300 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-700" key={index}>
                 {value}
               </span>
             ))}
@@ -73,10 +73,10 @@ const SelectedUserCard: React.FC<SelectedUserCardProps> = ({
         </div>
 
         <div className="px-3 py-4 flex flex-col gap-2 border border-gray-600">
-          <h2 className="text-lg font-semibold flex gap-2 items-center">hobbies</h2>
+          <h2 className="text-lg font-semibold">hobbies</h2>
           <div className="text-neutral-200 flex flex-wrap gap-2">
             {selectedUser?.about?.hobbies.map((value: string, index: number) => (
-              <span className="text-neutral-300 px-2 py-1 text-sm rounded-md bg-neutral-700" key={index}>
+              <span className="text-neutral-300 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-700" key={index}>
                 {value}
               </span>
             ))}
@@ -84,19 +84,20 @@ const SelectedUserCard: React.FC<SelectedUserCardProps> = ({
         </div>
 
         <div className="px-3 py-4 flex flex-col gap-2 border border-gray-600">
-          <h2 className="text-lg font-semibold flex gap-2 items-center">socials</h2>
+          <h2 className="text-lg font-semibold">socials</h2>
           <div className="text-neutral-200 flex flex-wrap gap-2">
             {selectedUser?.about?.socials.map((value: string, index: number) => (
-              <a href={value} className="text-neutral-300 px-2 py-1 text-sm rounded-md bg-neutral-700" key={index}>
+              <a href={value} className="text-neutral-300 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-700" key={index}>
                 {value.startsWith("http") ? value.split('/')[2].split('.')[0] : value.split('.')[0]}
               </a>
             ))}
           </div>
         </div>
-        <div className="flex gap-2 px-3 py-4">
+
+        <div className="flex flex-wrap gap-2 px-3 py-4">
           {selectedUser._id !== user._id && (
             <button
-              className="px-4 py-2 w-fit bg-gradient-to-br from-orange-400 to-orange-600 text-lg text-white flex gap-2 items-center"
+              className="px-4 py-2 w-full sm:w-fit bg-gradient-to-br from-orange-400 to-orange-600 text-base sm:text-lg text-white flex gap-2 items-center justify-center"
               onClick={() => openChat(selectedUser._id)}
             >
               Chat <AiOutlineMessage size="1rem" />
@@ -104,7 +105,7 @@ const SelectedUserCard: React.FC<SelectedUserCardProps> = ({
           )}
           {isInDevspace && selectedUserInDevspace && selectedUser._id !== user._id && (
             <button
-              className={`px-4 py-2 w-fit text-lg text-white flex gap-2 items-center ${
+              className={`px-4 py-2 w-full sm:w-fit text-base sm:text-lg text-white flex gap-2 items-center justify-center ${
                 isInTeam
                   ? 'bg-green-500 cursor-not-allowed'
                   : pendingInviteFromSelectedUser

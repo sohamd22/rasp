@@ -14,14 +14,21 @@ interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({ user, selectUser }) => {
   return (
-    <div className='w-52 border border-gray-600 cursor-pointer' onClick={() => selectUser(user)}>
-      <div className="bg-gradient-to-br from-orange-300/100 to-orange-400/100">
-        <img src={user.photo} alt={user.name} className='w-full h-32 object-cover border border-gray-600 mix-blend-multiply' />
+    <div 
+      className='w-full sm:w-52 border border-gray-600 cursor-pointer hover:shadow-lg transition-shadow duration-300'
+      onClick={() => selectUser(user)}
+    >
+      <div className="bg-gradient-to-br from-orange-300 to-orange-400">
+        <img 
+          src={user.photo} 
+          alt={user.name} 
+          className='w-full h-40 sm:h-32 object-cover border border-gray-600 mix-blend-multiply' 
+        />
       </div>
       
-      <div className='flex flex-col gap-2 px-3 py-5'>
-        <h2 className='text-lg font-semibold'>{user.name}</h2>
-        <p>{user.relevantInfo}</p>
+      <div className='flex flex-col gap-2 px-4 sm:px-3 py-6 sm:py-5'>
+        <h2 className='text-xl sm:text-lg font-semibold'>{user.name}</h2>
+        <p className='text-sm'>{user.relevantInfo}</p>
       </div>      
     </div>
   );

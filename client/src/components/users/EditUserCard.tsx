@@ -22,7 +22,7 @@ interface EditUserCardProps {
 
 const EditUserCard: React.FC<EditUserCardProps> = ({ user }) => {
   return (
-    <div className={`w-[500px] border border-gray-600 sticky top-10 right-0`}>
+    <div className="w-full max-w-[500px] mx-auto border border-gray-600 sticky top-10 right-0">
       <div className="bg-gradient-to-br from-orange-300/100 to-orange-400/100">
         <img
           src={user.photo}
@@ -33,17 +33,17 @@ const EditUserCard: React.FC<EditUserCardProps> = ({ user }) => {
 
       <div className="flex flex-col">
         <div className="flex flex-col gap-1 border border-gray-600 px-3 py-4">
-          <h2 className="text-lg font-semibold flex gap-2 items-center">
+          <h2 className="text-lg font-semibold flex flex-wrap gap-2 items-center">
             {user.name}{' '}
-            <span className="text-base font-normal text-neutral-400">
+            <span className="text-sm font-normal text-neutral-400">
               {user.about.gender ? user.about.gender + ' |' : ''}{' '}
               {user.about.campus ? user.about.campus + ' campus' : ''}
             </span>
           </h2>
-          <p className="text-neutral-400">
+          <p className="text-neutral-400 text-sm break-words">
             - {user.about.major ? user.about.major + ' |' : ''}{' '}
             {user.about.standing ? user.about.standing + ' |' : ''}{' '}
-            <a href={`mailto:${user.email}`} className="underline">
+            <a href={`mailto:${user.email}`} className="underline break-all">
               {user.email}
             </a>
           </p>
@@ -58,7 +58,7 @@ const EditUserCard: React.FC<EditUserCardProps> = ({ user }) => {
           <h2 className="text-lg font-semibold flex gap-2 items-center">skills</h2>
           <div className="text-neutral-200 flex flex-wrap gap-2">
             {user.about.skills.map((value, index) => (
-              <span className="text-neutral-300 px-2 py-1 text-sm rounded-md bg-neutral-700" key={index}>
+              <span className="text-neutral-300 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-700" key={index}>
                 {value}
               </span>
             ))}
@@ -69,7 +69,7 @@ const EditUserCard: React.FC<EditUserCardProps> = ({ user }) => {
           <h2 className="text-lg font-semibold flex gap-2 items-center">hobbies</h2>
           <div className="text-neutral-200 flex flex-wrap gap-2">
             {user.about.hobbies.map((value, index) => (
-              <span className="text-neutral-300 px-2 py-1 text-sm rounded-md bg-neutral-700" key={index}>
+              <span className="text-neutral-300 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-700" key={index}>
                 {value}
               </span>
             ))}
@@ -80,7 +80,7 @@ const EditUserCard: React.FC<EditUserCardProps> = ({ user }) => {
           <h2 className="text-lg font-semibold flex gap-2 items-center">socials</h2>
           <div className="text-neutral-200 flex flex-wrap gap-2">
             {user.about.socials.map((value, index) => (
-              <a href={value} className="text-neutral-300 px-2 py-1 text-sm rounded-md bg-neutral-700" key={index}>
+              <a href={value} className="text-neutral-300 px-2 py-1 text-xs sm:text-sm rounded-md bg-neutral-700 break-all" key={index}>
                 {value.startsWith("http") ? value.split('/')[2].split('.')[0] : ""}
               </a>
             ))}

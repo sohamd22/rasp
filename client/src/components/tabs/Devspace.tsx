@@ -44,58 +44,62 @@ const Devspace = () => {
     }
 
     return (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6 p-4 max-w-full overflow-y-auto">
             {!user?.isInDevspace ? (
-                <button onClick={joinDevspace} className="bg-blue-500 text-white px-4 py-2 rounded">Join Devspace</button>
+                <button onClick={joinDevspace} className="bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto">Join Devspace</button>
             ) : (
-                <div className="overflow-hidden flex flex-col gap-6">
-                  <div className="absolute top-0 left-0 w-full h-1/2 mx-auto -z-10">
-                    <Confetti />
-                  </div>
-                    <h1 className="text-4xl font-bold">Welcome to Devspace!</h1>
+                <div className="sm:justify-normal sm:items-start sm:text-left overflow-hidden flex flex-col gap-6 justify-center items-center text-center">
+                    <div className="absolute top-0 left-0 w-full h-1/2 mx-auto -z-10">
+                        <Confetti />
+                    </div>
+                    <h1 className="text-3xl sm:text-4xl font-bold text-center sm:text-left">Welcome to Devspace!</h1>
 
                     <div className="flex flex-col gap-2">
-                        <h2 className="text-2xl font-bold">Your team</h2>
+                        <h2 className="text-xl sm:text-2xl font-bold">Your team</h2>
                         {team.length > 0 ? (
-                            <div className="flex flex-wrap gap-4">
+                            <div className="flex flex-wrap justify-center sm:justify-start gap-4">
                                 {team.map((member: any) => (
                                     <UserCard key={member._id} user={member} selectUser={() => {}} />
                                 ))}
                             </div>
                         ) : (
-                            <p>You are not in a team, invite people through user search, or go solo.</p>
+                            <p className="text-center sm:text-left">You are not in a team, invite people through user search, or go solo.</p>
                         )}
                     </div>
 
-                    <div>
-                      {sentInvitations.length > 0 && (  
-                        <h2 className="text-2xl font-bold">Sent Invitations</h2>
-                      )}
-                        {sentInvitations.map((invitation) => (
-                            <div key={invitation.to._id} className="border p-4 rounded mb-2">
-                                <p>Invitation sent to {invitation.to.name}</p>
-                                <button onClick={() => handleCancelInvitation(invitation.to._id)} className="bg-red-500 text-white px-4 py-2 rounded mt-2">Cancel Invitation</button>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div>
-                      {pendingInvitations.length > 0 && (
-                        <h2 className="text-2xl font-bold">Pending Invitations</h2>
-                      )}
-                        {pendingInvitations.map((invitation) => (
-                            <div key={invitation._id} className="border p-4 rounded mb-2">
-                                <p>Invitation from {invitation.from.name}</p>
-                                <p>Team members: {invitation.teamMembers.map(member => member.name).join(', ')}</p>
-                                <div className="flex gap-2 mt-2">
-                                    <button onClick={() => handleAcceptInvitation(invitation._id)} className="bg-green-500 text-white px-4 py-2 rounded">Accept</button>
-                                    <button onClick={() => handleRejectInvitation(invitation._id)} className="bg-red-500 text-white px-4 py-2 rounded">Reject</button>
+                    <div className="flex flex-col gap-2">
+                        {sentInvitations.length > 0 && (  
+                            <h2 className="text-xl sm:text-2xl font-bold">Sent Invitations</h2>
+                        )}
+                        <div className="flex flex-col gap-2">
+                            {sentInvitations.map((invitation) => (
+                                <div key={invitation.to._id} className="border p-4 rounded">
+                                    <p className="text-sm sm:text-base">Invitation sent to {invitation.to.name}</p>
+                                    <button onClick={() => handleCancelInvitation(invitation.to._id)} className="bg-red-500 text-white px-4 py-2 rounded mt-2 w-full sm:w-auto text-sm sm:text-base">Cancel Invitation</button>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
 
-                    {error && <p className="text-red-500">{error}</p>}
+                    <div className="flex flex-col gap-2">
+                        {pendingInvitations.length > 0 && (
+                            <h2 className="text-xl sm:text-2xl font-bold">Pending Invitations</h2>
+                        )}
+                        <div className="flex flex-col gap-2">
+                            {pendingInvitations.map((invitation) => (
+                                <div key={invitation._id} className="border p-4 rounded">
+                                    <p className="text-sm sm:text-base">Invitation from {invitation.from.name}</p>
+                                    <p className="text-sm sm:text-base">Team members: {invitation.teamMembers.map(member => member.name).join(', ')}</p>
+                                    <div className="flex flex-col sm:flex-row gap-2 mt-2">
+                                        <button onClick={() => handleAcceptInvitation(invitation._id)} className="bg-green-500 text-white px-4 py-2 rounded w-full sm:w-auto text-sm sm:text-base">Accept</button>
+                                        <button onClick={() => handleRejectInvitation(invitation._id)} className="bg-red-500 text-white px-4 py-2 rounded w-full sm:w-auto text-sm sm:text-base">Reject</button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {error && <p className="text-red-500 text-center sm:text-left">{error}</p>}
                 </div>
             )}
         </div>

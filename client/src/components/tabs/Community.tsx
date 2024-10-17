@@ -23,23 +23,32 @@ const Community = ({ setCurrentTab }: { setCurrentTab: (tab: string) => void }) 
   };
 
   return (
-    <div>
-      <div className="flex gap-20">
-      <div className="flex flex-col gap-8">
-          <h1 className="text-2xl font-bold">Community</h1>
+    <div className="container mx-auto px-4 overflow-y-auto">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-20">
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold mb-8">Community</h1>
           <div className="flex flex-wrap gap-4">
-              {communityUsers.map((user) => (
-                <UserCard key={user._id} user={ {...user, relevantInfo: user.status ? `says "${user.status}"` : ""} } selectUser={setSelectedUser} />
-              ))}
+            {communityUsers.map((user) => (
+              <UserCard
+                key={user._id}
+                user={{ ...user, relevantInfo: user.status ? `says "${user.status}"` : "" }}
+                selectUser={setSelectedUser}
+              />
+            ))}
           </div>
         </div>
 
-        <div className="col-span-1">
-          {selectedUser && <SelectedUserCard selectedUser={selectedUser} openChat={openChat} setCurrentTab={setCurrentTab} />}
+        <div className="w-full md:w-1/3 lg:w-1/4">
+          {selectedUser && (
+            <SelectedUserCard
+              selectedUser={selectedUser}
+              openChat={openChat}
+              setCurrentTab={setCurrentTab}
+            />
+          )}
         </div>
       </div>
     </div>
-    
   );
 };
 
