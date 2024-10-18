@@ -11,7 +11,7 @@ const useSocketStore = create<SocketState>((set) => ({
   socket: null,
   connectSocket: (userId: string) => {
     try {
-      const newSocket = io('http://localhost:5000', {
+      const newSocket = io('/', {
         query: { userId },
         autoConnect: false
       });
