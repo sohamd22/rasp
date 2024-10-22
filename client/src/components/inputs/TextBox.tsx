@@ -18,8 +18,8 @@ const TextBox: React.FC<TextBoxProps> = ({ label, name, placeholder, value, setV
   };
 
   return (
-    <div className='flex flex-col gap-2'>
-      <label htmlFor={name} className='text-white'>{label}</label>
+    <div className='flex flex-col gap-2 w-full'>
+      <label htmlFor={name} className='text-white text-sm sm:text-base'>{label}</label>
       <textarea
         autoComplete="off"
         id={name}
@@ -28,7 +28,7 @@ const TextBox: React.FC<TextBoxProps> = ({ label, name, placeholder, value, setV
         value={value}
         onChange={handleChange}
         maxLength={maxLength}
-        className="bg-neutral-800 p-3 text-neutral-200 h-32 resize-none rounded-md"
+        className="bg-neutral-800 p-2 sm:p-3 text-neutral-200 text-sm sm:text-base h-24 sm:h-32 w-full resize-none rounded-md"
       />
     </div>
   );

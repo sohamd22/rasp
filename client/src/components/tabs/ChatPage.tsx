@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useCallback, useState} from "react";
-import useSocketStore from '../../states/socketStore';
-import useUserStore from '../../states/userStore';
-import useChatStore, { ChatMessage, Chat } from '../../states/chatStore';
+import useUserStore from '../../stores/userStore';
+import useChatStore, { ChatMessage, Chat } from '../../stores/chatStore';
 import Message from "../chat/Message";
-import { formatDate } from "../../utils/formatDateTime";
+import { formatDate, formatTime } from "../../utils/formatDateTime";
 import Input from "../inputs/Input";
 import SubmitButton from "../inputs/SubmitButton";
 import axios from 'axios';
@@ -21,16 +20,13 @@ const ChatPage: React.FC = () => {
         getChats, 
         getMessages, 
         saveMessage,
-        updateChat,
-        addMessageToCache,
         setChats
     } = useChatStore();
-
-    const { socket } = useSocketStore();
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const [page, setPage] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
+    const [isChatListOpen, setIsChatListOpen] = useState(false);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -51,41 +47,6 @@ const ChatPage: React.FC = () => {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
-
-    useEffect(() => {
-        socket?.on('message', (newMessage: ChatMessage) => {
-            addMessageToCache(newMessage.chat, newMessage);
-            
-            if(newMessage.chat === currentChatId) {
-                setMessages([...messages, newMessage]);
-            }        
-            
-            const updatedChat = chats.find(chat => chat._id === newMessage.chat);
-            if (updatedChat) {
-                updatedChat.lastMessage = {
-                    messageId: newMessage._id,
-                    content: newMessage.content,
-                    timestamp: newMessage.timestamp,
-                    senderName: newMessage.sender === user._id ? user.name : updatedChat.otherUserName,
-                    senderId: newMessage.sender
-                };
-                if (newMessage.sender !== user._id && newMessage.chat !== currentChatId) {
-                    updatedChat.unreadMessages = { ...updatedChat.unreadMessages, [user._id]: true };
-                }
-                updateChat(updatedChat);
-            }
-        });
-
-        return () => {
-            socket?.off('message');
-        };
-    }, [socket, messages, setMessages, currentChatId, chats, updateChat, user._id, user.name, addMessageToCache]);
-
-    useEffect(() => {
-        socket?.on('chat', (updatedChat: Chat) => {
-            updateChat(updatedChat);
-        });
-    }, [socket, updateChat]);
 
     const handleChatSelect = async (chat: Chat) => {
         setCurrentChatId(chat._id);
@@ -119,7 +80,7 @@ const ChatPage: React.FC = () => {
     const markChatAsRead = async (chatId: string) => {
         try {
             await axios.post(`${process.env.REACT_APP_SERVER_URL}/chat/markAsRead/${chatId}`, { userId: user._id });
-            const updatedChats = chats.map(chat => 
+            const updatedChats = chats.map((chat: Chat) => 
                 chat._id === chatId ? { ...chat, unreadMessages: { ...chat.unreadMessages, [user._id]: false } } : chat
             );
             setChats(updatedChats);
@@ -129,15 +90,22 @@ const ChatPage: React.FC = () => {
     };
 
     return (
-        <div className="flex h-full">
-            <div className="h-full w-64 text-white p-4" style={{ backgroundColor: '#262626' }}>
-                <h2 className="text-lg font-bold mb-4">chats</h2>
-                <ul className="space-y-2">
-                    {chats.map((chat, index) => (
+        <div className="flex flex-col md:flex-row h-[75vh] md:h-[calc(100vh-200px)] rounded-2xl overflow-hidden">
+            {/* Chat List */}
+            <div className={`${isChatListOpen ? 'h-full' : 'h-12'} md:h-full w-full md:w-64 text-white bg-neutral-900 transition-all duration-300 ease-in-out overflow-hidden`}>
+                <div className="flex justify-between items-center p-3 md:p-5 cursor-pointer md:cursor-default" onClick={() => setIsChatListOpen(!isChatListOpen)}>
+                    <h2 className="text-lg font-bold">Chats</h2>
+                    <span className="md:hidden">{isChatListOpen ? '▲' : '▼'}</span>
+                </div>
+                <ul className="overflow-y-auto max-h-[calc(100%-48px)] overflow-x-hidden">
+                    {chats.map((chat: Chat, index: number) => (
                         <li
                             key={index}
-                            onClick={() => handleChatSelect(chat)}
-                            className={`flex flex-col p-2 rounded-md cursor-pointer transition-all ${chat._id === currentChatId ? "bg-gray-600" : "bg-neutral-900"}`}
+                            onClick={() => {
+                                handleChatSelect(chat);
+                                setIsChatListOpen(false);
+                            }}
+                            className={`flex flex-col p-3 border-y border-neutral-700 cursor-pointer transition-all ${chat._id === currentChatId ? "bg-neutral-800" : ""}`}
                         >
                             <span className="font-medium flex justify-between items-center">
                                 {chat.isGroupChat ? chat.groupName : chat.otherUserName}
@@ -146,25 +114,25 @@ const ChatPage: React.FC = () => {
                                 )}
                             </span>
                             <span>
-                                {chat.lastMessage?.senderId === user._id ? "You" : chat.lastMessage?.senderName}: {chat.lastMessage?.content} - {formatDate(chat.lastMessage?.timestamp)}
+                                {chat.lastMessage?.senderId === user._id ? "You" : chat.lastMessage?.senderName}: {chat.lastMessage?.content.slice(0, 10)}... - {(formatDate(chat.lastMessage?.timestamp) === formatDate(new Date()) ? formatTime(chat.lastMessage?.timestamp) : formatDate(chat.lastMessage?.timestamp))}
                             </span>
-                            </li>
+                        </li>
                     ))}
                 </ul>
             </div>
             {/* Main Chat Panel */}
-            <div className="flex-1 p-6 bg-black">
+            <div className="flex-1 p-3 md:p-6 bg-black">
                 <div className="h-full flex flex-col">
                     {currentChatId ? (
-                        <div className="overflow-y-scroll flex flex-col-reverse gap-4 h-full" onScroll={handleScroll}>
+                        <div className="overflow-y-auto flex flex-col-reverse gap-4 h-full pr-2 md:pr-8" onScroll={handleScroll}>
                             <div ref={messagesEndRef} />
-                            <div className='flex gap-4'>
-                                <Input name="message" placeholder="Hey, I think you're super cool!" value={message} setValue={setMessage} />
-                                <SubmitButton onClick={handleSaveMessage} />
+                            <div className='flex gap-2 md:gap-4'>
+                                <Input name="message" placeholder="Hey, I think you're super cool!" maxLength={200} value={message} setValue={setMessage} />
+                                <SubmitButton onClick={handleSaveMessage}>Send</SubmitButton>
                             </div>
 
                             <div className="mt-auto flex flex-col gap-2">
-                                {messages.map((message, index) => {
+                                {messages.map((message: ChatMessage, index: number) => {
                                     const isSender = message.sender === user?._id;
                                     return (
                                         <Message 
@@ -181,7 +149,7 @@ const ChatPage: React.FC = () => {
                         </div>
                     ) : (
                         <div className="flex items-center justify-center h-full">
-                            <p className="text-gray-500">Select a chat to start messaging!</p>
+                            <p className="text-gray-500 text-sm md:text-base">Select a chat to start messaging!</p>
                         </div>
                     )}
                 </div>
@@ -189,6 +157,5 @@ const ChatPage: React.FC = () => {
         </div>
     );
 };
-
 
 export default ChatPage;

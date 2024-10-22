@@ -51,7 +51,7 @@ const ProfilePictureInput: React.FC<InputProps> = ({ label, name, setPhoto }) =>
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = async () => {
-      const optimizedPhoto = await compressBase64Image(reader.result, 200000, 800, 600);
+      const optimizedPhoto = await compressBase64Image(reader.result, 60000, 800, 600);
       setPhoto(optimizedPhoto);
     }
     reader.onerror = (error) => {
@@ -60,18 +60,23 @@ const ProfilePictureInput: React.FC<InputProps> = ({ label, name, setPhoto }) =>
   }
 
   return (
-    <div>
-      <div className='flex flex-col gap-2'>
-      <label htmlFor={name} className='text-white'>{label}</label>
-      <input 
-        type="file" 
-        accept="photo/*" 
-        onChange={convertToBase64} 
-        id={name}
-        name={name}
-        className="bg-neutral-800 p-3 text-neutral-200 rounded-md" 
-      />
-    </div>
+    <div className="w-full">
+      <div className='flex flex-col gap-3'>
+        <label htmlFor={name} className='text-white text-sm md:text-base'>{label}</label>
+        <div className="relative">
+          <input 
+            type="file" 
+            accept="image/*" 
+            onChange={convertToBase64} 
+            id={name}
+            name={name}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+          />
+          <div className="bg-neutral-800 p-3 text-neutral-200 rounded-md text-sm md:text-base flex items-center justify-center border-2 border-dashed border-neutral-600 h-20 md:h-24">
+            <span>Choose a file or drag it here</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -15,8 +15,8 @@ const Input: FC<InputProps> = ({ label, name, placeholder, value, setValue, maxL
   };
 
   return (
-    <div className='flex flex-col gap-2 w-full'>
-      {label ? <label htmlFor={name} className='text-white'>{label}</label> : <></>}
+    <div className='flex flex-col gap-2 w-full max-w-full'>
+      {label && <label htmlFor={name} className='text-white text-sm sm:text-base'>{label}</label>}
       <input
         type="text"
         autoComplete="off"
@@ -26,7 +26,7 @@ const Input: FC<InputProps> = ({ label, name, placeholder, value, setValue, maxL
         value={value}
         onChange={handleChange}
         maxLength={maxLength}
-        className="bg-neutral-800 p-3 text-neutral-200 rounded-md"
+        className="bg-neutral-800 p-2 sm:p-3 text-neutral-200 rounded-md w-full text-sm sm:text-base"
       />
     </div>
   );

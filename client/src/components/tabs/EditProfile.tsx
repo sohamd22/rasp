@@ -1,6 +1,5 @@
-import axios from "axios";
 import { useState, FormEvent } from "react";
-import useUserStore from "../../states/userStore";
+import useUserStore from "../../stores/userStore";
 
 import Input from "../inputs/Input";
 import ArrayInput from "../inputs/ArrayInput";
@@ -8,10 +7,11 @@ import SelectInput from "../inputs/SelectInput";
 import TextBox from "../inputs/TextBox";
 import SubmitButton from "../inputs/SubmitButton";
 import Heading from "../text/Heading";
-import EditUserCard from "../user/EditUserCard";
+import EditUserCard from "../users/EditUserCard";
 import ProfilePictureInput from "../inputs/ProfilePictureInput";
+import Highlight from "../text/Highlight";
 
-import isToxic from "../../utils/isToxic";
+// import isToxic from "../../utils/isToxic";
 
 const defaultUser: any = {
     name: "",
@@ -23,21 +23,14 @@ const defaultUser: any = {
         standing: "",
         major: "",
         skills: [],
-        projects: [],
-        experience: [],
         hobbies: [],
         socials: [],
         bio: "",
-        status: {
-            content: "",
-            duration: "",
-            expirationDate: new Date()
-        },
     },
 }
 
 const UserProfile = () => {
-    const { user } = useUserStore();
+    const { user, updateUserProfile, isUpdatingProfile, profileError } = useUserStore();
 
     const [userData, setUserData] = useState<any>({
         ...defaultUser,
@@ -47,37 +40,34 @@ const UserProfile = () => {
     const saveUser = async (e: FormEvent) => {
         e.preventDefault();
 
-        const textToCheck = `
-            ${userData.name}
+        // const textToCheck = `
+        //     ${userData.name}
 
-            ${userData.about.bio}
+        //     ${userData.about.bio}
 
-            ${userData.about.skills.join(" ")}
+        //     ${userData.about.skills.join(" ")}
 
-            ${userData.about.hobbies.join(" ")}
+        //     ${userData.about.hobbies.join(" ")}
 
-            ${userData.about.major}
+        //     ${userData.about.major}
 
-            ${userData.about.socials.join(" ")}
-        `
+        //     ${userData.about.socials.join(" ")}
+        // `
 
-        if (await isToxic(textToCheck)) {
-            alert("Your profile contains inappropriate content. Please remove it before saving.");
-            return;
-        };
+        // if (await isToxic(textToCheck)) {
+        //     alert("Your profile contains inappropriate content. Please remove it before saving.");
+        //     return;
+        // };
 
-        const response = await axios.patch(`${process.env.REACT_APP_SERVER_URL}/user/save`, { user: { ...user, ...userData } });
-        if (response.status === 201) {
-            alert("User saved successfully");
-        }    
+        await updateUserProfile({ ...user, ...userData });
     };
 
     return (
-        <div className="grid grid-cols-2 gap-20">
-            <div className="flex flex-col gap-12">
-                <Heading>Enter your information</Heading>
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-20">
+            <div className="flex flex-col gap-8 md:gap-12">
+                <Heading>Edit your <Highlight>profile</Highlight></Heading>
 
-                <form onSubmit={e => e.preventDefault()} className="flex flex-col gap-6 col-span-1">
+                <form onSubmit={e => e.preventDefault()} className="flex flex-col gap-4 md:gap-6">
                     <ProfilePictureInput label="Upload your profile picture" name="pfp" setPhoto={(photo: any) => {
                         setUserData((userData: any) => ({ ...userData, photo }));
                     }} />
@@ -130,7 +120,7 @@ const UserProfile = () => {
                         maxLength={50}
                     />
                     <ArrayInput
-                        label="your skills"
+                        label="your skills (hit enter to add)"
                         name="skills"
                         placeholder="e.g. running, business, etc."
                         items={userData.about.skills}
@@ -139,7 +129,7 @@ const UserProfile = () => {
                         maxItems={10}
                     />
                     <ArrayInput
-                        label="your hobbies"
+                        label="your hobbies (hit enter to add)"
                         name="hobbies"
                         placeholder="e.g. ping-pong, shrimping, etc."
                         items={userData.about.hobbies}
@@ -150,7 +140,7 @@ const UserProfile = () => {
                     <ArrayInput
                         label="your socials (must start with http/https)"
                         name="socials"
-                        placeholder="e.g. linkedin, github, etc."
+                        placeholder="e.g. https://linkedin.com/in/name etc."
                         items={userData.about.socials}
                         setItems={(items: string[]) => setUserData((userData: any) => ({ ...userData, about: { ...userData.about, socials: items.filter(item => item.startsWith("http")) } }))}
                         maxLength={100}
@@ -165,11 +155,15 @@ const UserProfile = () => {
                         maxLength={500}
                     />
                     
-                    <SubmitButton onClick={saveUser} />
+                    <SubmitButton onClick={saveUser} loading={isUpdatingProfile}>
+                      save
+                    </SubmitButton>
+
+                    {profileError && <p className="text-red-500 text-sm">{profileError}</p>}
                 </form>
             </div>
 
-            <div className="col-span-1">
+            <div className="mt-8 md:mt-0">
                 <EditUserCard user={{ ...user, ...userData }} />
             </div>
         </div>
