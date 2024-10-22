@@ -140,12 +140,12 @@ const Cards: React.FC<CardProps> = ({ items, className, imageClass }) => (
             className={`object-cover h-full ${imageClass} w-full`}
           />
         </div>
-        <div className="border border-dashed border-gray-700 px-3 py-2 lg:px-5 lg:py-4 text-center flex justify-center items-center gap-2">
-          <p className="text-base sm:text-sm lg:text-base font-semibold leading-tight text-white">
+        <div className="border border-dashed border-gray-700 px-3 py-2 lg:px-5 lg:py-4 text-center flex flex-wrap justify-center items-center gap-2">
+          <p className=" text-xs md:text-sm lg:text-base font-normal leading-tight text-white">
             {item[0]}
           </p>
           {item.length === 3 && (
-            <p className="text-sm sm:text-xs lg:text-base font-semibold leading-tight">
+            <p className="text-xs md:text-sm lg:text-base font-normal leading-tight">
               <Highlight>({item[2]})</Highlight>
             </p>
           )}
@@ -157,7 +157,7 @@ const Cards: React.FC<CardProps> = ({ items, className, imageClass }) => (
 
 const Highlight = ({ children }: { children: React.ReactNode }) => {
   return (
-    <mark className="bg-gradient-to-r from-orange-500 to-orange-300 text-transparent bg-clip-text">
+    <mark className="bg-gradient-to-r from-orange-500 to-orange-300  ">
       {children}
     </mark>
   );
@@ -187,7 +187,7 @@ const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
   speed = 30,
 }) => {
   const [scrollDirection, setScrollDirection] = useState(direction);
-  const isVertical = scrollDirection.startsWith("vertical");
+    const isVertical = true;
   const animationDirection =
     scrollDirection.endsWith("up") || scrollDirection.endsWith("left") ? -1 : 1;
 
@@ -205,7 +205,7 @@ const InfiniteScroll: React.FC<InfiniteScrollProps> = ({
     height: "100%",
     width: "100%",
     display: "flex",
-    flexDirection: isVertical ? "column" : "row", // Correct flexDirection
+    flexDirection:  "row", // Correct flexDirection
     justifyContent: "center",
     alignItems: "center",
   };
