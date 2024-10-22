@@ -1,0 +1,43 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@langchain/community": "^0.3.0",
+    "@langchain/core": "^0.3.1",
+    "@langchain/google-genai": "^0.1.0",
+    "@langchain/mongodb": "^0.1.0",
+    "@tensorflow/tfjs": "1.0",
+    "@xenova/transformers": "^2.17.2",
+    "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
+    "compromise": "^14.14.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "googleapis": "^143.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
+    "langchain": "^0.3.2",
+    "mongodb": "^5.9.1",
+    "mongoose": "^8.7.0",
+    "natural": "^8.0.1",
+    "nodemon": "^3.1.4",
+    "socket.io": "^4.8.0",
+    "uuid": "^10.0.0"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@types/mongoose": "^5.11.97"
+  }
+}
