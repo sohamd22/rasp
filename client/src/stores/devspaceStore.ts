@@ -32,6 +32,12 @@ interface DevspaceState {
   updateDevspaceInfo: (updatedDevspace: any) => void;
   error: string | null;
   setError: (error: string | null) => void;
+  idea: {
+    title: string;
+    description: string;
+  } | null;
+  updateIdea: (userId: string, title: string, description: string) => Promise<void>;
+  isLoading: boolean;
 }
 
 const useDevspaceStore = create<DevspaceState>((set) => ({
@@ -46,7 +52,8 @@ const useDevspaceStore = create<DevspaceState>((set) => ({
       set({ 
         team: response.data.team,
         pendingInvitations: response.data.pendingInvitations,
-        sentInvitations: response.data.sentInvitations
+        sentInvitations: response.data.sentInvitations,
+        idea: response.data.idea || null
       });
       return response.data;
     } catch (error) {
@@ -91,9 +98,22 @@ const useDevspaceStore = create<DevspaceState>((set) => ({
     set({
       team: updatedDevspace.team,
       pendingInvitations: updatedDevspace.pendingInvitations,
-      sentInvitations: updatedDevspace.sentInvitations
+      sentInvitations: updatedDevspace.sentInvitations,
+      idea: updatedDevspace.idea
     });
   },
+  idea: null,
+  updateIdea: async (userId: string, title: string, description: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      await axios.post('/api/devspace/update-idea', { userId, title, description });
+      set({ isLoading: false });
+    } catch (error) {
+      console.error('Error updating idea:', error);
+      set({ error: 'Failed to update idea', isLoading: false });
+    }
+  },
+  isLoading: false,
 }));
 
 export default useDevspaceStore;

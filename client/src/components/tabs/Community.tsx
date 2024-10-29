@@ -33,7 +33,13 @@ const Community = ({ setCurrentTab }: { setCurrentTab: (tab: string) => void }) 
             {communityUsers.map((user) => (
               <UserCard
                 key={user._id}
-                user={{ ...user, relevantInfo: user.status ? `says "${user.status}"` : "" }}
+                user={{ 
+                  ...user, 
+                  relevantInfo: [
+                    user.status ? `says "${user.status}"` : null,
+                    user.idea?.title ? `working on "${user.idea.title}"` : null
+                  ].filter(Boolean).join("\n\n")
+                }}
                 selectUser={setSelectedUser}
               />
             ))}

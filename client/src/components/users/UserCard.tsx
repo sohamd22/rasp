@@ -28,7 +28,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, selectUser }) => {
       
       <div className='flex flex-col gap-2 px-4 sm:px-3 py-6 sm:py-5'>
         <h2 className='text-xl sm:text-lg font-semibold'>{user.name}</h2>
-        <p className='text-sm'>{user.relevantInfo}</p>
+        <p className='text-sm whitespace-pre-line'>{user.relevantInfo}</p>
       </div>      
     </div>
   );
